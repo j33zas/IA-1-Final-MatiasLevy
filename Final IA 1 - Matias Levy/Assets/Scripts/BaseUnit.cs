@@ -56,6 +56,7 @@ public class BaseUnit : MonoBehaviour
 
 
     protected bool inCombat;
+    public bool isattacking = false;
     protected Node destination;
     protected bool hasDestination;
     protected float distanceToDestination;
@@ -63,6 +64,7 @@ public class BaseUnit : MonoBehaviour
     public List<BaseUnit> enemiesClose;
 
     public Transform eyeSightPosition;
+    public Transform attackPosition;
     public float eyeSightLength;
     public float combatLength;
 

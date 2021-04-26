@@ -8,9 +8,11 @@ public class HeavyAttackSoldierState : SoldierState
     {
 
     }
+
     public override void Awake()
     {
         base.Awake();
+        _me.isattacking = true;
         _me.AN.SetTrigger("Heavy");
     }
 
@@ -26,6 +28,7 @@ public class HeavyAttackSoldierState : SoldierState
 
     public override void Sleep()
     {
+        _me.isattacking = false;
         base.Sleep();
     }
 }

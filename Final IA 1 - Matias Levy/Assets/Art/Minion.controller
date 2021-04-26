@@ -125,9 +125,6 @@ AnimatorStateTransition:
   - m_ConditionMode: 2
     m_ConditionEvent: Has destination
     m_EventTreshold: 0
-  - m_ConditionMode: 4
-    m_ConditionEvent: Dist. to destination
-    m_EventTreshold: 0.3
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102364703057976032}
   m_Solo: 0

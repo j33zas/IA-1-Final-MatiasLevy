@@ -17,7 +17,7 @@ public class Soldier : BaseUnit
     GoToRunSoldierState runToState;
     HealSoldierState healState;
     FleeSoldierState fleeState;
-    AttackCloseSoldierState attackLightState;
+    LightAttackSoldierState attackLightState;
     HeavyAttackSoldierState attackHeavyState;
     DieSoldierState dieState;
     CombatSoldierState combatState;
@@ -29,7 +29,7 @@ public class Soldier : BaseUnit
         runToState = new GoToRunSoldierState(SM, this);
         healState = new HealSoldierState(SM, this);
         fleeState = new FleeSoldierState(SM, this);
-        attackLightState = new AttackCloseSoldierState(SM, this);
+        attackLightState = new LightAttackSoldierState(SM, this);
         attackHeavyState = new HeavyAttackSoldierState(SM, this);
         dieState = new DieSoldierState(SM, this);
         combatState = new CombatSoldierState(SM, this);
@@ -79,37 +79,42 @@ public class Soldier : BaseUnit
                         enemiesClose.Add(soldier);
             }
         }
-        if(enemiesClose.Count > 0 && !SM.IsActualState<CombatSoldierState>() && !SM.IsActualState<HeavyAttackSoldierState>() && !SM.IsActualState<AttackCloseSoldierState>())
+        if(enemiesClose.Count > 0)
         {
             if(enemiesClose.Count >= 5)
             {
                 //fleeState.target = myGeneral;
                 SM.SetState<FleeSoldierState>();
             }
+
             var soldierTarget = enemiesClose[0].GetComponent<Soldier>();
             foreach (Soldier enemy in enemiesClose)
             {
                 if (Vector3.Distance(enemy.transform.position, transform.position) > Vector3.Distance(soldierTarget.transform.position, transform.position))
                     soldierTarget = enemy;
             }
-            combatState.target = soldierTarget;
-            SM.SetState<CombatSoldierState>();
+            if(!SM.IsActualState<CombatSoldierState>() || !isattacking)
+            {
+                combatState.target = soldierTarget;
+                SM.SetState<CombatSoldierState>();
+            }
         }
         #endregion
 
         Debug.Log(SM.currentstate);
+        Debug.Log(isattacking);
 
         SM.Update();
     }
 
     void InstanceAttackHeavy()
     {
-        Instantiate(heavyAttack);
+        Instantiate(heavyAttack, attackPosition.position, attackPosition.rotation);
     }
 
     void InstanceAttackLight()
     {
-        Instantiate(lightAttack);
+        Instantiate(lightAttack, attackPosition.position, attackPosition.rotation);
     }
 
     public override void HeavyAttack()
@@ -121,7 +126,7 @@ public class Soldier : BaseUnit
     public override void LightAttack()
     {
         base.LightAttack();
-        SM.SetState<AttackCloseSoldierState>();
+        SM.SetState<LightAttackSoldierState>();
     }
 
     public override void TakeDMG(int DMG)

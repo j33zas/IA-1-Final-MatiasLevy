@@ -10,8 +10,6 @@ public class CombatSoldierState : SoldierState
 
     Vector3 _predictedPos = Vector3.zero;
 
-    bool Attacked;
-
     Dictionary<string, int> _attacks = new Dictionary<string, int>();
     float _totalAttackWeight = 10;
 
@@ -23,11 +21,9 @@ public class CombatSoldierState : SoldierState
         _me.AN.SetBool("Has destination", true);
 
         if(!_attacks.ContainsKey("Heavy"))
-            _attacks.Add("Heavy", 3);
+            _attacks.Add("Heavy", 4);
         if(!_attacks.ContainsKey("Light"))
-        _attacks.Add("Light", 7);
-
-        Attacked = false;
+        _attacks.Add("Light", 6);
     }
 
     public override void Execute()
@@ -53,16 +49,17 @@ public class CombatSoldierState : SoldierState
         }
         else
         {
-            if(!Attacked)
+            if(!_me.AN.GetBool("Has destination"))
+                _me.AN.SetBool("Has destination", false);
+            if (!_me.isattacking)
             {
-                Attacked = true;
                 float R = Random.Range(0, _totalAttackWeight);
                 foreach (var Attack in _attacks)
                 {
                     R -= Attack.Value;
+                    Debug.Log(R + " Current R " + Attack.Key + " current attack");
                     if(R<=0)
                     {
-                        Debug.Log("Roulette Wheel Selecting");
                         if (Attack.Key == "Heavy")
                             _me.HeavyAttack();
                         else if (Attack.Key == "Light")

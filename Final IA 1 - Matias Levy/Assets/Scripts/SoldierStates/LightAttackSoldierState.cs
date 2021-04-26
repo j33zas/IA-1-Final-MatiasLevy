@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AttackCloseSoldierState : SoldierState
+public class LightAttackSoldierState : SoldierState
 {
-    public AttackCloseSoldierState(StateMachine sm, Soldier S) : base(sm, S)
+    public LightAttackSoldierState(StateMachine sm, Soldier S) : base(sm, S)
     {
 
     }
@@ -12,6 +12,7 @@ public class AttackCloseSoldierState : SoldierState
     public override void Awake()
     {
         base.Awake();
+        _me.isattacking = true;
         _me.AN.SetTrigger("Light");
     }
 
@@ -27,6 +28,7 @@ public class AttackCloseSoldierState : SoldierState
 
     public override void Sleep()
     {
+        _me.isattacking = false;
         base.Sleep();
     }
 }
