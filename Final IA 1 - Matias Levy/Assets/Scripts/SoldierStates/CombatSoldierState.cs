@@ -23,7 +23,7 @@ public class CombatSoldierState : SoldierState
         if(!_attacks.ContainsKey("Heavy"))
             _attacks.Add("Heavy", 4);
         if(!_attacks.ContainsKey("Light"))
-        _attacks.Add("Light", 6);
+            _attacks.Add("Light", 6);
     }
 
     public override void Execute()
@@ -49,15 +49,15 @@ public class CombatSoldierState : SoldierState
         }
         else
         {
-            if(!_me.AN.GetBool("Has destination"))
+            if(_me.AN.GetBool("Has destination"))
                 _me.AN.SetBool("Has destination", false);
+
             if (!_me.isattacking)
             {
                 float R = Random.Range(0, _totalAttackWeight);
                 foreach (var Attack in _attacks)
                 {
                     R -= Attack.Value;
-                    Debug.Log(R + " Current R " + Attack.Key + " current attack");
                     if(R<=0)
                     {
                         if (Attack.Key == "Heavy")

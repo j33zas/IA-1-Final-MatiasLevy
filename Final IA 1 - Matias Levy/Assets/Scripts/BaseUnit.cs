@@ -83,9 +83,18 @@ public class BaseUnit : MonoBehaviour
         enemiesClose = new List<BaseUnit>();
     }
 
-    public  Node FindClosestNode(Transform target)
+    public Node FindClosestNode(Transform target, float viewRange)
     {
-        var nodes = Physics.OverlapSphere(target.position, 15, nodesLayer);
+        var nodes = Physics.OverlapSphere(target.position, viewRange, nodesLayer);
+        if(nodes.Length<=0)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                if (nodes.Length>0)
+                    continue;
+                nodes = Physics.OverlapSphere(target.position, viewRange * i, nodesLayer);
+            }
+        }
         Node Closest = null;
         foreach (var item in nodes)
         {

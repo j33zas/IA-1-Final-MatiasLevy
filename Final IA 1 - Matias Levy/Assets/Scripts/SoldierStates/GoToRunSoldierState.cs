@@ -30,7 +30,7 @@ public class GoToRunSoldierState : SoldierState
 
         _me.AN.SetBool("Has destination", true);
 
-        _path = _me.GetAstarPath(_me.FindClosestNode(_me.eyeSightPosition), _me.FindClosestNode(target.transform)).ToArray();
+        _path = _me.GetAstarPath(_me.FindClosestNode(_me.eyeSightPosition, _me.eyeSightLength), _me.FindClosestNode(target.transform, _me.eyeSightLength)).ToArray();
 
         foreach (var item in _path)// solo para debugear
             item.isPath = true;

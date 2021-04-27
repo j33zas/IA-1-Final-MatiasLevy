@@ -21,6 +21,7 @@ public class Soldier : BaseUnit
     HeavyAttackSoldierState attackHeavyState;
     DieSoldierState dieState;
     CombatSoldierState combatState;
+    HitSoldierState hitState;
 
     private void Start()
     {
@@ -33,7 +34,7 @@ public class Soldier : BaseUnit
         attackHeavyState = new HeavyAttackSoldierState(SM, this);
         dieState = new DieSoldierState(SM, this);
         combatState = new CombatSoldierState(SM, this);
-
+        hitState = new HitSoldierState(SM, this);
 
         SM.AddState(idleState);
         SM.AddState(walkToState);
@@ -44,6 +45,7 @@ public class Soldier : BaseUnit
         SM.AddState(attackHeavyState);
         SM.AddState(dieState);
         SM.AddState(combatState);
+        SM.AddState(hitState);
         SM.SetState<IdleSoldierState>();
 
         heavyAttack.owner = this;
@@ -101,8 +103,8 @@ public class Soldier : BaseUnit
         }
         #endregion
 
-        Debug.Log(SM.currentstate);
-        Debug.Log(isattacking);
+        //Debug.Log(SM.currentstate + " " + this.name);
+        //Debug.Log(this.name + " " + isattacking + " Is attacking");
 
         SM.Update();
     }
@@ -132,7 +134,7 @@ public class Soldier : BaseUnit
     public override void TakeDMG(int DMG)
     {
         base.TakeDMG(DMG);
-        AN.SetTrigger("Hit");
+        SM.SetState<HitSoldierState>();
     }
 
     private void OnDrawGizmos()

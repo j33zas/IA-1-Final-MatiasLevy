@@ -13,6 +13,7 @@ public class HeavyAttackSoldierState : SoldierState
     {
         base.Awake();
         _me.isattacking = true;
+        Debug.Log("heavy " + _me.name);
         _me.AN.SetTrigger("Heavy");
     }
 
