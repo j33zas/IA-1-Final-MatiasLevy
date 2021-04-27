@@ -83,22 +83,22 @@ public class Soldier : BaseUnit
         }
         if(enemiesClose.Count > 0)
         {
-            if(enemiesClose.Count >= 5)
+            if(enemiesClose.Count >= 3)
             {
-                //fleeState.target = myGeneral;
+                fleeState.attacker = enemiesClose[0].transform;
                 SM.SetState<FleeSoldierState>();
             }
-
-            var soldierTarget = enemiesClose[0].GetComponent<Soldier>();
-            foreach (Soldier enemy in enemiesClose)
+            else
             {
-                if (Vector3.Distance(enemy.transform.position, transform.position) > Vector3.Distance(soldierTarget.transform.position, transform.position))
-                    soldierTarget = enemy;
-            }
-            if(!SM.IsActualState<CombatSoldierState>() || !isattacking)
-            {
-                combatState.target = soldierTarget;
-                SM.SetState<CombatSoldierState>();
+                var soldierTarget = enemiesClose[0].GetComponent<Soldier>();
+                foreach (Soldier enemy in enemiesClose)
+                    if (Vector3.Distance(enemy.transform.position, transform.position) > Vector3.Distance(soldierTarget.transform.position, transform.position))
+                        soldierTarget = enemy;
+                if(!SM.IsActualState<CombatSoldierState>() || !isattacking)
+                {
+                    combatState.target = soldierTarget;
+                    SM.SetState<CombatSoldierState>();
+                }
             }
         }
         #endregion
