@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FleeSoldierState : SoldierState
 {
-    public Transform attacker;
+    public BaseUnit attacker;
 
     Vector3 _dir = new Vector3();
 
@@ -16,17 +16,18 @@ public class FleeSoldierState : SoldierState
         _dir = -(_me.objective.transform.position - _me.transform.position);
 
         _me.AN.SetBool("Has destination", true);
+        _me.AN.SetBool("Running", true);
     }
 
     public override void Execute()
     {
         base.Execute();
 
-        _dir = -(attacker.position - _me.transform.position).normalized;
+        _dir = -(attacker.transform.position - _me.transform.position).normalized;
 
         _me.transform.forward = Vector3.Lerp(_me.transform.forward, _dir, _me.rotSpeed * Time.deltaTime);
 
-        _me.transform.position += attacker.position * _me.runSpeed * Time.deltaTime;
+        _me.transform.position += _me.transform.forward * _me.runSpeed * Time.deltaTime;
     }
 
     public override void LateExecute()
@@ -37,5 +38,8 @@ public class FleeSoldierState : SoldierState
     public override void Sleep()
     {
         base.Sleep();
+        _me.AN.SetBool("Has destination", false);
+        _me.AN.SetBool("Running", false);
+
     }
 }

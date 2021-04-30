@@ -12,7 +12,6 @@ public class IdleSoldierState : SoldierState
         base.Awake();
         _me.AN.SetBool("Has destination", false);
         _me.AN.SetBool("Enemy close", false);
-        _me.AN.SetFloat("Dist. to destination", 0);
         //Vector3.Distance(_me.eyeSightPosition.position, _me.objective.transform.position)
     }
 

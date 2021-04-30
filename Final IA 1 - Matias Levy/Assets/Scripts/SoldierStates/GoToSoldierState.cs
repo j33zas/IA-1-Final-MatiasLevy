@@ -29,6 +29,7 @@ public class GoToSoldierState : SoldierState
         currentNode = 0;
 
         _me.AN.SetBool("Has destination", true);
+        _me.AN.SetBool("Walking", true);
 
         _path = _me.GetAstarPath(_me.FindClosestNode(_me.eyeSightPosition, _me.eyeSightLength), _me.FindClosestNode(target.transform, _me.eyeSightLength)).ToArray();
 
@@ -92,7 +93,6 @@ public class GoToSoldierState : SoldierState
     {
         base.Sleep();
         _me.AN.SetBool("Has destination", false);
+        _me.AN.SetBool("Walking", false);
     }
-
-    
 }

@@ -46,6 +46,7 @@ public class BaseUnit : MonoBehaviour
     public int minDamage;
     public int maxDamage;
     public float AttackDistance;
+    public bool stunned;
 
     public float rotSpeed;
     public float walkSpeed;
@@ -256,7 +257,7 @@ public class BaseUnit : MonoBehaviour
 
     }
 
-    public virtual void TakeDMG(int DMG)
+    public virtual void TakeDMG(int DMG, float minStun, float maxStun)
     {
         currentHealth -= DMG;
     }

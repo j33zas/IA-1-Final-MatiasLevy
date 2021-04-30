@@ -29,6 +29,7 @@ public class GoToRunSoldierState : SoldierState
         currentNode = 0;
 
         _me.AN.SetBool("Has destination", true);
+        _me.AN.SetBool("Running", true);
 
         _path = _me.GetAstarPath(_me.FindClosestNode(_me.eyeSightPosition, _me.eyeSightLength), _me.FindClosestNode(target.transform, _me.eyeSightLength)).ToArray();
 
@@ -40,8 +41,6 @@ public class GoToRunSoldierState : SoldierState
     {
         base.Execute();
         distToTarget = Vector3.Distance(target.transform.position, _me.transform.position);
-
-        _me.AN.SetFloat("Dist. to destination", distToTarget);
 
         if (currentNode < _path.Length)
         {
@@ -83,5 +82,6 @@ public class GoToRunSoldierState : SoldierState
     {
         base.Sleep();
         _me.AN.SetBool("Has destination", false);
+        _me.AN.SetBool("Running", false);
     }
 }

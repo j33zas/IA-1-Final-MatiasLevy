@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Soldier : BaseUnit
 {
+    public ParticleSystem hitParticle;
+
     public GameObject objective;
 
     Soldier[] Batallion;
@@ -59,6 +61,9 @@ public class Soldier : BaseUnit
         if(objective==null)
             SM.SetState<IdleSoldierState>();
 
+        if (stunned)
+            SM.SetState<HitSoldierState>();
+
         if(Input.GetKey(KeyCode.Space))
         {
             walkToState.target = objective;
@@ -83,17 +88,18 @@ public class Soldier : BaseUnit
         }
         if(enemiesClose.Count > 0)
         {
+            var soldierTarget = enemiesClose[0].GetComponent<Soldier>();
+            foreach (Soldier enemy in enemiesClose)
+                if (Vector3.Distance(enemy.transform.position, transform.position) > Vector3.Distance(soldierTarget.transform.position, transform.position))
+                    soldierTarget = enemy;
+
             if(enemiesClose.Count >= 3)
             {
-                fleeState.attacker = enemiesClose[0].transform;
+                fleeState.attacker = soldierTarget;
                 SM.SetState<FleeSoldierState>();
             }
             else
             {
-                var soldierTarget = enemiesClose[0].GetComponent<Soldier>();
-                foreach (Soldier enemy in enemiesClose)
-                    if (Vector3.Distance(enemy.transform.position, transform.position) > Vector3.Distance(soldierTarget.transform.position, transform.position))
-                        soldierTarget = enemy;
                 if(!SM.IsActualState<CombatSoldierState>() || !isattacking)
                 {
                     combatState.target = soldierTarget;
@@ -131,10 +137,11 @@ public class Soldier : BaseUnit
         SM.SetState<LightAttackSoldierState>();
     }
 
-    public override void TakeDMG(int DMG)
+    public override void TakeDMG(int DMG, float minStun, float maxStun)
     {
-        base.TakeDMG(DMG);
-        SM.SetState<HitSoldierState>();
+        base.TakeDMG(DMG,minStun,maxStun);
+        hitState.stunTime = Random.Range(minStun, maxStun);
+        stunned = true;
     }
 
     private void OnDrawGizmos()

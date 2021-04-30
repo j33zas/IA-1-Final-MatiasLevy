@@ -19,6 +19,7 @@ public class CombatSoldierState : SoldierState
     {
         base.Awake();
         _me.AN.SetBool("Has destination", true);
+        _me.AN.SetBool("Walking", true);
 
         if(!_attacks.ContainsKey("Heavy"))
             _attacks.Add("Heavy", 4);
@@ -33,8 +34,6 @@ public class CombatSoldierState : SoldierState
         obstacle = _me.GetObstacle(_me.transform, _me.obsAvoidanceRadious, _me.obstacleMask);
 
         Vector3 dir = (target.transform.position - _me.transform.position).normalized;
-
-        _me.AN.SetFloat("Dist. to destination", Vector3.Distance(target.transform.position, _me.transform.position));
 
         if(Vector3.Distance(_me.transform.position, target.transform.position) > _me.AttackDistance)
         {
@@ -79,5 +78,6 @@ public class CombatSoldierState : SoldierState
     {
         base.Sleep();
         _me.AN.SetBool("Has destination", false);
+        _me.AN.SetBool("Walking", false);
     }
 }

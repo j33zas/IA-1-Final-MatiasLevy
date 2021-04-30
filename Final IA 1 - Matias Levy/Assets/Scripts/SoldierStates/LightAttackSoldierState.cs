@@ -10,7 +10,6 @@ public class LightAttackSoldierState : SoldierState
     {
         base.Awake();
         _me.isattacking = true;
-        Debug.Log("light " + _me.name);
         _me.AN.SetTrigger("Light");
     }
 
