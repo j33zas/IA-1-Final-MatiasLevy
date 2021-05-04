@@ -60,7 +60,8 @@ MonoBehaviour:
   minDamage: 3
   maxDamage: 5
   AttackDistance: 2
-  rotSpeed: 2
+  stunned: 0
+  rotSpeed: 2.5
   walkSpeed: 1
   runSpeed: 3
   obsAvoidanceRadious: 1
@@ -74,7 +75,6 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 1024
-  fleeVector: {x: 0, y: 0, z: 0}
   hitParticle: {fileID: 6389826262827882496}
   objective: {fileID: 0}
   lightAttack: {fileID: 4819186087503119911, guid: 0c00f171311757e4b8f44b8580c57895,

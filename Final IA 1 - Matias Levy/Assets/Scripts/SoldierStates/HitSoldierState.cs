@@ -6,8 +6,6 @@ public class HitSoldierState : SoldierState
 {
     public HitSoldierState(StateMachine SM, Soldier S):base(SM,S){}
 
-    public float stunTime;
-
     public override void Awake()
     {
         base.Awake();
@@ -18,9 +16,6 @@ public class HitSoldierState : SoldierState
     public override void Execute()
     {
         base.Execute();
-        stunTime -= Time.deltaTime;
-        if (stunTime <= 0)
-            _me.stunned = false;
     }
 
     public override void LateExecute()
@@ -31,5 +26,6 @@ public class HitSoldierState : SoldierState
     public override void Sleep()
     {
         base.Sleep();
+        _me.stunned = false;
     }
 }

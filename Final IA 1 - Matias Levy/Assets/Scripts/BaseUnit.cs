@@ -47,6 +47,7 @@ public class BaseUnit : MonoBehaviour
     public int maxDamage;
     public float AttackDistance;
     public bool stunned;
+    public float stunTime = 0;
 
     public float rotSpeed;
     public float walkSpeed;
@@ -55,6 +56,7 @@ public class BaseUnit : MonoBehaviour
     public float obsAvoidanceRadious;
     public float obsAvoidanceWeight;
 
+    protected BaseUnit soldierTarget;
 
     protected bool inCombat;
     public bool isattacking = false;
@@ -82,6 +84,7 @@ public class BaseUnit : MonoBehaviour
         _SM = new StateMachine();
         _RB = GetComponent<Rigidbody>();
         enemiesClose = new List<BaseUnit>();
+        currentHealth = maxHealth;
     }
 
     public Node FindClosestNode(Transform target, float viewRange)
@@ -257,8 +260,25 @@ public class BaseUnit : MonoBehaviour
 
     }
 
-    public virtual void TakeDMG(int DMG, float minStun, float maxStun)
+    public virtual void TakeDMG(int DMG, float stun)
     {
         currentHealth -= DMG;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, obsAvoidanceRadious);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, AttackDistance);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(eyeSightPosition.position, eyeSightLength);
+
+        Gizmos.DrawRay(eyeSightPosition.position, transform.forward * eyeSightLength);
+        var temp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength, EnemyLayer);
+        foreach (var item in temp)
+            Gizmos.DrawRay(eyeSightPosition.position, (item.transform.position - eyeSightPosition.position));
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CombatSoldierState : SoldierState
 {
-    public Soldier target;
+    public BaseUnit target;
 
     GameObject obstacle;
 
@@ -40,9 +40,11 @@ public class CombatSoldierState : SoldierState
             if (obstacle)
                 dir += (_me.transform.position - obstacle.transform.position).normalized * _me.obsAvoidanceWeight;
             else
-                dir = target.transform.position - _me.transform.position;
+                dir = (target.transform.position - _me.transform.position);
 
-            _me.transform.forward = Vector3.Lerp(_me.transform.forward, dir, Time.deltaTime * _me.rotSpeed);
+            dir = Vector3.Scale(dir, new Vector3(1, 0, 1));// para que no roten hacia arria y abajo, solo para los costados
+
+            _me.transform.forward = Vector3.Lerp(_me.transform.forward, dir.normalized, Time.deltaTime * _me.rotSpeed);
 
             _me.transform.position += _me.transform.forward * _me.walkSpeed * Time.deltaTime;
         }

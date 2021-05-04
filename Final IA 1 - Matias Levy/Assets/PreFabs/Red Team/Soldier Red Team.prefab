@@ -60,7 +60,8 @@ MonoBehaviour:
   minDamage: 3
   maxDamage: 5
   AttackDistance: 2
-  rotSpeed: 2
+  stunned: 0
+  rotSpeed: 2.5
   walkSpeed: 1
   runSpeed: 3
   obsAvoidanceRadious: 1
@@ -74,12 +75,11 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 1024
-  fleeVector: {x: 0, y: 0, z: 0}
   hitParticle: {fileID: 4735621815956407286}
   objective: {fileID: 0}
-  lightAttack: {fileID: 4819186087503119911, guid: 0c00f171311757e4b8f44b8580c57895,
+  lightAttack: {fileID: 4819186087503119911, guid: a59b1bc735f122f4a9dc505e90aed4be,
     type: 3}
-  heavyAttack: {fileID: 4078379181235222540, guid: d0f5da8f69dc1344e863d1ea9ea65975,
+  heavyAttack: {fileID: 4078379181235222540, guid: 75f4d9056d85a4c49afb5f27a99b437e,
     type: 3}
 --- !u!54 &5836903166639898568
 Rigidbody:
@@ -580,8 +580,7 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 12
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 9500000, guid: ae62baf2a6fb4e540b8d8b223e760bf7, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae62baf2a6fb4e540b8d8b223e760bf7, type: 3}
 --- !u!4 &2970403107819581123 stripped
 Transform:

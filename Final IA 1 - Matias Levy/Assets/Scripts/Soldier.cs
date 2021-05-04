@@ -10,6 +10,8 @@ public class Soldier : BaseUnit
 
     Soldier[] Batallion;
 
+    General commander;
+
     public HitBox lightAttack;
     public HitBox heavyAttack;
 
@@ -17,7 +19,6 @@ public class Soldier : BaseUnit
     IdleSoldierState idleState;
     GoToSoldierState walkToState;
     GoToRunSoldierState runToState;
-    HealSoldierState healState;
     FleeSoldierState fleeState;
     LightAttackSoldierState attackLightState;
     HeavyAttackSoldierState attackHeavyState;
@@ -30,7 +31,6 @@ public class Soldier : BaseUnit
         idleState = new IdleSoldierState(SM, this);
         walkToState = new GoToSoldierState(SM, this);
         runToState = new GoToRunSoldierState(SM, this);
-        healState = new HealSoldierState(SM, this);
         fleeState = new FleeSoldierState(SM, this);
         attackLightState = new LightAttackSoldierState(SM, this);
         attackHeavyState = new HeavyAttackSoldierState(SM, this);
@@ -41,7 +41,6 @@ public class Soldier : BaseUnit
         SM.AddState(idleState);
         SM.AddState(walkToState);
         SM.AddState(runToState);
-        SM.AddState(healState);
         SM.AddState(fleeState);
         SM.AddState(attackLightState);
         SM.AddState(attackHeavyState);
@@ -50,24 +49,49 @@ public class Soldier : BaseUnit
         SM.AddState(hitState);
         SM.SetState<IdleSoldierState>();
 
-        heavyAttack.owner = this;
-        heavyAttack.enemyLayer = EnemyLayer;
-        lightAttack.owner = this;
-        lightAttack.enemyLayer = EnemyLayer;
+        var temp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength, gameObject.layer);
+        if(temp.Length>0)
+        {
+            foreach (var item in temp)
+            {
+                var G = item.GetComponent<General>();
+                if(G)
+                    commander = G;
+            }
+        }
     }
 
     private void Update()
     {
-        if(objective==null)
-            SM.SetState<IdleSoldierState>();
-
         if (stunned)
-            SM.SetState<HitSoldierState>();
+        {
+            if(SM.currentstate != hitState)
+                SM.SetState<HitSoldierState>();
+            stunTime -= Time.deltaTime;
+            if (stunTime <= 0)
+            {
+                SM.SetState<IdleSoldierState>();
+                stunTime = 0;
+            }
+            return;
+        }
+
+        if (currentHealth <= 20)
+        {
+            if(enemiesClose.Count == 0)
+            {
+                objective = commander.gameObject;
+                SM.SetState<GoToRunSoldierState>();
+            }
+            else
+            {
+                objective = commander.gameObject;
+                SM.SetState<FleeSoldierState>();
+            }
+        }
 
         if(Input.GetKey(KeyCode.Space))
         {
-            walkToState.target = objective;
-            runToState.target = objective;
             if (Vector3.Distance(transform.position, objective.transform.position) > 10)
                 SM.SetState<GoToRunSoldierState>();
             else
@@ -81,48 +105,45 @@ public class Soldier : BaseUnit
             foreach (var item in temp)
             {
                 var soldier = item.GetComponent<Soldier>();
-                //if(Physics.Raycast(eyeSightPosition.position, (item.transform.position - eyeSightPosition.position), eyeSightLength ,obstacleMask))
                     if(soldier && !enemiesClose.Contains(soldier))
                         enemiesClose.Add(soldier);
             }
         }
         if(enemiesClose.Count > 0)
         {
-            var soldierTarget = enemiesClose[0].GetComponent<Soldier>();
+            soldierTarget = enemiesClose[0].GetComponent<Soldier>();
             foreach (Soldier enemy in enemiesClose)
                 if (Vector3.Distance(enemy.transform.position, transform.position) > Vector3.Distance(soldierTarget.transform.position, transform.position))
                     soldierTarget = enemy;
-
-            if(enemiesClose.Count >= 3)
-            {
-                fleeState.attacker = soldierTarget;
-                SM.SetState<FleeSoldierState>();
-            }
-            else
-            {
-                if(!SM.IsActualState<CombatSoldierState>() || !isattacking)
-                {
-                    combatState.target = soldierTarget;
-                    SM.SetState<CombatSoldierState>();
-                }
-            }
         }
         #endregion
-
-        //Debug.Log(SM.currentstate + " " + this.name);
-        //Debug.Log(this.name + " " + isattacking + " Is attacking");
+        if(enemiesClose.Count >= 3)
+        {
+            fleeState.attacker = soldierTarget;
+            SM.SetState<FleeSoldierState>();
+        }
+        else
+        {
+            if(!isattacking)
+            {
+                combatState.target = soldierTarget;
+                SM.SetState<CombatSoldierState>();
+            }
+        }
 
         SM.Update();
     }
 
     void InstanceAttackHeavy()
     {
-        Instantiate(heavyAttack, attackPosition.position, attackPosition.rotation);
+        HitBox atk = Instantiate(heavyAttack, attackPosition.position, attackPosition.rotation);
+        atk.owner = this;
     }
 
     void InstanceAttackLight()
     {
-        Instantiate(lightAttack, attackPosition.position, attackPosition.rotation);
+        HitBox atk = Instantiate(lightAttack, attackPosition.position, attackPosition.rotation);
+        atk.owner = this;
     }
 
     public override void HeavyAttack()
@@ -137,27 +158,10 @@ public class Soldier : BaseUnit
         SM.SetState<LightAttackSoldierState>();
     }
 
-    public override void TakeDMG(int DMG, float minStun, float maxStun)
+    public override void TakeDMG(int DMG, float stun)
     {
-        base.TakeDMG(DMG,minStun,maxStun);
-        hitState.stunTime = Random.Range(minStun, maxStun);
+        base.TakeDMG(DMG,stun);
+        stunTime = stun;
         stunned = true;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, obsAvoidanceRadious);
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, AttackDistance);
-
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(eyeSightPosition.position, eyeSightLength);
-
-        Gizmos.DrawRay(eyeSightPosition.position, transform.forward * eyeSightLength);
-        var temp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength, EnemyLayer);
-        foreach (var item in temp)
-            Gizmos.DrawRay(eyeSightPosition.position, (item.transform.position - eyeSightPosition.position));
     }
 }

@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class GoToSoldierState : SoldierState
 {
-    public GameObject target;
-
     GameObject obstacle;
 
     float distToTarget;
@@ -31,7 +29,7 @@ public class GoToSoldierState : SoldierState
         _me.AN.SetBool("Has destination", true);
         _me.AN.SetBool("Walking", true);
 
-        _path = _me.GetAstarPath(_me.FindClosestNode(_me.eyeSightPosition, _me.eyeSightLength), _me.FindClosestNode(target.transform, _me.eyeSightLength)).ToArray();
+        _path = _me.GetAstarPath(_me.FindClosestNode(_me.eyeSightPosition, _me.eyeSightLength), _me.FindClosestNode(_me.objective.transform, _me.eyeSightLength)).ToArray();
 
         foreach (var item in _path)// solo para debugear
             item.isPath = true;
@@ -40,7 +38,7 @@ public class GoToSoldierState : SoldierState
     public override void Execute()
     {
         base.Execute();
-        distToTarget = Vector3.Distance(target.transform.position, _me.transform.position);
+        distToTarget = Vector3.Distance(_me.objective.transform.position, _me.transform.position);
 
         _me.AN.SetFloat("Dist. to destination", distToTarget);
 
@@ -62,7 +60,6 @@ public class GoToSoldierState : SoldierState
                 if (currentNode > _path.Length)
                 {
                     _me.objective = null;
-                    target = null;
                 }
                 else
                     currentNode++;

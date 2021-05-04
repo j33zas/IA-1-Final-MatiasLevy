@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6085523246540645907}
   - component: {fileID: 4078379181235222540}
   m_Layer: 0
-  m_Name: HeavytAttackSoldier
+  m_Name: HeavytAttackSoldierBlue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -59,4 +59,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minDMG: 8
   maxDMG: 15
+  minStun: 3
+  maxStun: 5
   lifeTime: 1.5
+  owner: {fileID: 0}
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 4096
