@@ -997,7 +997,7 @@ PrefabInstance:
     - target: {fileID: 7291704111985551392, guid: f3529eb2317f3ff43a4ed5fc64725b50,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.04
       objectReference: {fileID: 0}
     - target: {fileID: 7291704111985551392, guid: f3529eb2317f3ff43a4ed5fc64725b50,
         type: 3}
@@ -1043,46 +1043,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4643825149082983131, guid: f3529eb2317f3ff43a4ed5fc64725b50,
-        type: 3}
-      propertyPath: obsAvoidanceWeight
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4643825149082983131, guid: f3529eb2317f3ff43a4ed5fc64725b50,
-        type: 3}
-      propertyPath: minDamage
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 4643825149082983131, guid: f3529eb2317f3ff43a4ed5fc64725b50,
-        type: 3}
-      propertyPath: maxDamage
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 4643825149082983131, guid: f3529eb2317f3ff43a4ed5fc64725b50,
-        type: 3}
-      propertyPath: AttackDistance
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4643825149082983131, guid: f3529eb2317f3ff43a4ed5fc64725b50,
-        type: 3}
-      propertyPath: obsAvoidanceRadious
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4643825149082983131, guid: f3529eb2317f3ff43a4ed5fc64725b50,
-        type: 3}
-      propertyPath: stunned
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4643825149082983131, guid: f3529eb2317f3ff43a4ed5fc64725b50,
-        type: 3}
-      propertyPath: eyeSightLength
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 4643825149082983131, guid: f3529eb2317f3ff43a4ed5fc64725b50,
-        type: 3}
-      propertyPath: combatLength
-      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f3529eb2317f3ff43a4ed5fc64725b50, type: 3}
@@ -4896,7 +4856,7 @@ PrefabInstance:
     - target: {fileID: 1230421370391498818, guid: 1196da8e263eaf1488edb051b734f99d,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.8828042e-16
+      value: 0.04
       objectReference: {fileID: 0}
     - target: {fileID: 1230421370391498818, guid: 1196da8e263eaf1488edb051b734f99d,
         type: 3}
@@ -4942,51 +4902,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3769563089331462841, guid: 1196da8e263eaf1488edb051b734f99d,
-        type: 3}
-      propertyPath: runSpeed
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 3769563089331462841, guid: 1196da8e263eaf1488edb051b734f99d,
-        type: 3}
-      propertyPath: minDamage
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 3769563089331462841, guid: 1196da8e263eaf1488edb051b734f99d,
-        type: 3}
-      propertyPath: maxDamage
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 3769563089331462841, guid: 1196da8e263eaf1488edb051b734f99d,
-        type: 3}
-      propertyPath: AttackDistance
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3769563089331462841, guid: 1196da8e263eaf1488edb051b734f99d,
-        type: 3}
-      propertyPath: obsAvoidanceWeight
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3769563089331462841, guid: 1196da8e263eaf1488edb051b734f99d,
-        type: 3}
-      propertyPath: obsAvoidanceRadious
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3769563089331462841, guid: 1196da8e263eaf1488edb051b734f99d,
-        type: 3}
-      propertyPath: stunned
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3769563089331462841, guid: 1196da8e263eaf1488edb051b734f99d,
-        type: 3}
-      propertyPath: eyeSightLength
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 3769563089331462841, guid: 1196da8e263eaf1488edb051b734f99d,
-        type: 3}
-      propertyPath: combatLength
-      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1196da8e263eaf1488edb051b734f99d, type: 3}

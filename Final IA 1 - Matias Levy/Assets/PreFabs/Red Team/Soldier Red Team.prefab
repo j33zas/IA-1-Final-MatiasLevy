@@ -61,6 +61,7 @@ MonoBehaviour:
   maxDamage: 5
   AttackDistance: 2
   stunned: 0
+  stunTime: 0
   rotSpeed: 2.5
   walkSpeed: 1
   runSpeed: 3
@@ -77,9 +78,9 @@ MonoBehaviour:
     m_Bits: 1024
   hitParticle: {fileID: 4735621815956407286}
   objective: {fileID: 0}
-  lightAttack: {fileID: 4819186087503119911, guid: a59b1bc735f122f4a9dc505e90aed4be,
+  lightAttack: {fileID: 4819186087503119911, guid: 0c00f171311757e4b8f44b8580c57895,
     type: 3}
-  heavyAttack: {fileID: 4078379181235222540, guid: 75f4d9056d85a4c49afb5f27a99b437e,
+  heavyAttack: {fileID: 4078379181235222540, guid: d0f5da8f69dc1344e863d1ea9ea65975,
     type: 3}
 --- !u!54 &5836903166639898568
 Rigidbody:

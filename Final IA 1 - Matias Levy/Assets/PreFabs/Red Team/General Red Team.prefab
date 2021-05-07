@@ -55,22 +55,22 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2048
   maxHealth: 150
-  minDamage: 30
-  maxDamage: 60
-  AttackDistance: 10
+  minDamage: 20
+  maxDamage: 40
+  AttackDistance: 2
   stunned: 0
   stunTime: 0
   rotSpeed: 3
   walkSpeed: 2
-  runSpeed: 3
-  obsAvoidanceRadious: 3
+  runSpeed: 4
+  obsAvoidanceRadious: 1
   obsAvoidanceWeight: 2
   isattacking: 0
   enemiesClose: []
   eyeSightPosition: {fileID: 1768533409401511378}
   attackPosition: {fileID: 2756878903727802845}
-  eyeSightLength: 20
-  combatLength: 5
+  eyeSightLength: 15
+  combatLength: 2
   obstacleMask:
     serializedVersion: 2
     m_Bits: 1024
@@ -233,10 +233,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 9500000, guid: 11f62d5da999c74499fd5887607e2876, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 3824225d97b4142469c41c78cb8d970b, type: 2}
     - target: {fileID: 13700000, guid: 11f62d5da999c74499fd5887607e2876, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -497,8 +493,7 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 12
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 9500000, guid: 11f62d5da999c74499fd5887607e2876, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11f62d5da999c74499fd5887607e2876, type: 3}
 --- !u!4 &1191570202043859607 stripped
 Transform:

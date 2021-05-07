@@ -17,14 +17,6 @@ public class HitBox : MonoBehaviour
     public Soldier owner;
     LayerMask enemyLayer;
 
-    private void Start()
-    {
-        if (owner.gameObject.layer == 11)
-            enemyLayer.value = 12;
-        else if (owner.gameObject.layer == 12)
-            enemyLayer.value = 11;
-    }
-
     private void Update()
     {
         Destroy(gameObject, lifeTime);
@@ -35,10 +27,12 @@ public class HitBox : MonoBehaviour
         var enemy = coll.GetComponent<BaseUnit>();
         if(enemy)
             if(((1 << coll.gameObject.layer) & enemyLayer) == 0)
+            {
                 if(!enemiesHit.Contains(enemy))
                 {
                     enemy.TakeDMG(Random.Range(minDMG,maxDMG), Random.Range(minStun, maxStun));
                     enemiesHit.Add(enemy);
                 }
+            }
     }
 }

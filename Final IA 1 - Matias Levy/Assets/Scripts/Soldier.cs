@@ -54,15 +54,21 @@ public class Soldier : BaseUnit
         {
             foreach (var item in temp)
             {
-                var G = item.GetComponent<General>();
-                if(G)
+                var go = item.GetComponent<GameObject>();
+                var G = go.GetComponent<General>();
+                if(G!= null)
+                {
+                    Debug.Log("Commander");
                     commander = G;
+                }
             }
         }
     }
 
     private void Update()
     {
+        AN.SetBool("Stunned", stunned);
+
         if (stunned)
         {
             if(SM.currentstate != hitState)
