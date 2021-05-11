@@ -25,7 +25,6 @@ public class LightAttackSoldierState : SoldierState
 
     public override void Sleep()
     {
-        _me.isattacking = false;
         base.Sleep();
     }
 }

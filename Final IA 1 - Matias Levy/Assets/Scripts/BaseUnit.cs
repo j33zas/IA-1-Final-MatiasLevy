@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BaseUnit : MonoBehaviour
 {
+    public bool gizmos = false;
+
     StateMachine _SM;
     public StateMachine SM
     {
@@ -40,6 +42,8 @@ public class BaseUnit : MonoBehaviour
     public LayerMask nodesLayer;
     public LayerMask EnemyLayer;
 
+    public StateText debugText;
+
     protected int currentHealth;
     public int maxHealth;
 
@@ -71,6 +75,9 @@ public class BaseUnit : MonoBehaviour
     public float eyeSightLength;
     public float combatLength;
 
+    protected Dictionary<string, int> _attacks = new Dictionary<string, int>();
+    protected float _totalAttackWeight = 10;
+
     public LayerMask obstacleMask;
 
     List<Node> _openNodes = new List<Node>();
@@ -85,6 +92,12 @@ public class BaseUnit : MonoBehaviour
         _RB = GetComponent<Rigidbody>();
         enemiesClose = new List<BaseUnit>();
         currentHealth = maxHealth;
+
+
+        if (!_attacks.ContainsKey("Heavy"))
+            _attacks.Add("Heavy", 4);
+        if (!_attacks.ContainsKey("Light"))
+            _attacks.Add("Light", 6);
     }
 
     public Node FindClosestNode(Transform target, float viewRange)
@@ -250,12 +263,7 @@ public class BaseUnit : MonoBehaviour
         return _obs;
     }
 
-    public virtual void LightAttack()
-    {
-
-    }
-
-    public virtual void HeavyAttack()
+    public virtual void AttackRouletteWheel()
     {
 
     }
@@ -267,18 +275,21 @@ public class BaseUnit : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, obsAvoidanceRadious);
+        if(gizmos)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(transform.position, obsAvoidanceRadious);
 
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, AttackDistance);
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, AttackDistance);
 
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(eyeSightPosition.position, eyeSightLength);
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(eyeSightPosition.position, eyeSightLength);
 
-        Gizmos.DrawRay(eyeSightPosition.position, transform.forward * eyeSightLength);
-        var temp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength, EnemyLayer);
-        foreach (var item in temp)
-            Gizmos.DrawRay(eyeSightPosition.position, (item.transform.position - eyeSightPosition.position));
+            Gizmos.DrawRay(eyeSightPosition.position, transform.forward * eyeSightLength);
+            var temp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength, EnemyLayer);
+            foreach (var item in temp)
+                Gizmos.DrawRay(eyeSightPosition.position, (item.transform.position - eyeSightPosition.position));
+        }
     }
 }

@@ -12,27 +12,23 @@ public class HitBox : MonoBehaviour
 
     public float lifeTime;
 
-    List<BaseUnit> enemiesHit = new List<BaseUnit>();
-
-    public Soldier owner;
-    LayerMask enemyLayer;
-
+    public BaseUnit owner;
+    public LayerMask enemyLayer;
+    
     private void Update()
     {
         Destroy(gameObject, lifeTime);
     }
 
-    private void OnTriggerStay(Collider coll)
+    private void OnTriggerEnter(Collider coll)
     {
-        var enemy = coll.GetComponent<BaseUnit>();
-        if(enemy)
-            if(((1 << coll.gameObject.layer) & enemyLayer) == 0)
+        if(((1 << coll.gameObject.layer) & enemyLayer) == 0)
+        {
+            var enemy = coll.GetComponent<BaseUnit>();
+            if(enemy != owner)
             {
-                if(!enemiesHit.Contains(enemy))
-                {
-                    enemy.TakeDMG(Random.Range(minDMG,maxDMG), Random.Range(minStun, maxStun));
-                    enemiesHit.Add(enemy);
-                }
+                enemy.TakeDMG(Random.Range(minDMG, maxDMG), Random.Range(minStun, maxStun));
             }
+        }
     }
 }

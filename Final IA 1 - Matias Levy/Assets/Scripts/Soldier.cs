@@ -49,18 +49,14 @@ public class Soldier : BaseUnit
         SM.AddState(hitState);
         SM.SetState<IdleSoldierState>();
 
-        var temp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength, gameObject.layer);
-        if(temp.Length>0)
+        var temp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength);
+        if(temp.Length > 0)
         {
             foreach (var item in temp)
             {
-                var go = item.GetComponent<GameObject>();
-                var G = go.GetComponent<General>();
+                var G = item.gameObject.GetComponent<General>();
                 if(G!= null)
-                {
-                    Debug.Log("Commander");
                     commander = G;
-                }
             }
         }
     }
@@ -68,11 +64,15 @@ public class Soldier : BaseUnit
     private void Update()
     {
         AN.SetBool("Stunned", stunned);
+        debugText.text = SM.currentstate.ToString();
+        SM.Update();
 
         if (stunned)
         {
-            if(SM.currentstate != hitState)
+            if (SM.currentstate != hitState)
                 SM.SetState<HitSoldierState>();
+
+            isattacking = false;
             stunTime -= Time.deltaTime;
             if (stunTime <= 0)
             {
@@ -95,15 +95,6 @@ public class Soldier : BaseUnit
                 SM.SetState<FleeSoldierState>();
             }
         }
-
-        if(Input.GetKey(KeyCode.Space))
-        {
-            if (Vector3.Distance(transform.position, objective.transform.position) > 10)
-                SM.SetState<GoToRunSoldierState>();
-            else
-                SM.SetState<GoToSoldierState>();
-        }
-
         #region Busqueda de enemigos
         var temp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength, EnemyLayer);
         if(temp.Length > 0)
@@ -136,38 +127,49 @@ public class Soldier : BaseUnit
                 SM.SetState<CombatSoldierState>();
             }
         }
-
-        SM.Update();
     }
 
     void InstanceAttackHeavy()
     {
         HitBox atk = Instantiate(heavyAttack, attackPosition.position, attackPosition.rotation);
+        atk.enemyLayer = EnemyLayer.value;
         atk.owner = this;
     }
 
     void InstanceAttackLight()
     {
         HitBox atk = Instantiate(lightAttack, attackPosition.position, attackPosition.rotation);
+        atk.enemyLayer = EnemyLayer.value;
         atk.owner = this;
     }
 
-    public override void HeavyAttack()
+    void FinishAttack()
     {
-        base.HeavyAttack();
-        SM.SetState<HeavyAttackSoldierState>();
+        isattacking = false;
     }
 
-    public override void LightAttack()
+    public override void AttackRouletteWheel()
     {
-        base.LightAttack();
-        SM.SetState<LightAttackSoldierState>();
+        float R = Random.Range(0, _totalAttackWeight);
+        foreach (var Attack in _attacks)
+        {
+            R -= Attack.Value;
+            if (R <= 0)
+            {
+                if (Attack.Key == "Heavy")
+                    SM.SetState<HeavyAttackSoldierState>();
+                else if (Attack.Key == "Light")
+                    SM.SetState<LightAttackSoldierState>();
+            }
+        }
     }
 
     public override void TakeDMG(int DMG, float stun)
     {
         base.TakeDMG(DMG,stun);
         stunTime = stun;
+        if (stunned) 
+            stunned = false;
         stunned = true;
     }
 }

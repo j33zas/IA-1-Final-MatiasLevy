@@ -10,9 +10,6 @@ public class CombatSoldierState : SoldierState
 
     Vector3 _predictedPos = Vector3.zero;
 
-    Dictionary<string, int> _attacks = new Dictionary<string, int>();
-    float _totalAttackWeight = 10;
-
     public CombatSoldierState(StateMachine sm, Soldier S) : base(sm, S){}
 
     public override void Awake()
@@ -21,10 +18,6 @@ public class CombatSoldierState : SoldierState
         _me.AN.SetBool("Has destination", true);
         _me.AN.SetBool("Walking", true);
 
-        if(!_attacks.ContainsKey("Heavy"))
-            _attacks.Add("Heavy", 4);
-        if(!_attacks.ContainsKey("Light"))
-            _attacks.Add("Light", 6);
     }
 
     public override void Execute()
@@ -35,7 +28,7 @@ public class CombatSoldierState : SoldierState
 
         Vector3 dir = (target.transform.position - _me.transform.position).normalized;
 
-        if(Vector3.Distance(_me.transform.position, target.transform.position) > _me.AttackDistance)
+        if(Vector3.Distance(_me.transform.position, target.transform.position) >= _me.AttackDistance)
         {
             if (obstacle)
                 dir += (_me.transform.position - obstacle.transform.position).normalized * _me.obsAvoidanceWeight;
@@ -54,20 +47,7 @@ public class CombatSoldierState : SoldierState
                 _me.AN.SetBool("Has destination", false);
 
             if (!_me.isattacking)
-            {
-                float R = Random.Range(0, _totalAttackWeight);
-                foreach (var Attack in _attacks)
-                {
-                    R -= Attack.Value;
-                    if(R<=0)
-                    {
-                        if (Attack.Key == "Heavy")
-                            _me.HeavyAttack();
-                        else if (Attack.Key == "Light")
-                            _me.LightAttack();
-                    }
-                }
-            }
+                _me.AttackRouletteWheel();
         }
     }
 
