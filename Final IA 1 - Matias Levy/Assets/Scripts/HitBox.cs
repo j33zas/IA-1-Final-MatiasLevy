@@ -22,7 +22,6 @@ public class HitBox : MonoBehaviour
 
     private void OnTriggerEnter(Collider coll)
     {
-        Debug.Log(coll.gameObject.tag + " my owner: " + owner.name + "- my enemy: " + enemyTag);
         if(coll.gameObject.tag == enemyTag)
         {
             var enemy = coll.GetComponent<BaseUnit>();

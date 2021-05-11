@@ -5,6 +5,7 @@ using UnityEngine;
 public class Soldier : BaseUnit
 {
     public ParticleSystem hitParticle;
+    public ParticleSystem stunnedParticle;
 
     public GameObject objective;
 
@@ -50,14 +51,12 @@ public class Soldier : BaseUnit
         SM.SetState<IdleSoldierState>();
 
         var temp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength);
-        if(temp.Length > 0)
+        foreach (var item in temp)
         {
-            foreach (var item in temp)
-            {
-                var G = item.gameObject.GetComponent<General>();
-                if(G!= null)
-                    commander = G;
-            }
+            Debug.Log(item.name);
+            var G = item.gameObject.GetComponent<General>();
+            if(G!= null)
+                commander = G;
         }
     }
 
@@ -67,7 +66,7 @@ public class Soldier : BaseUnit
         debugText.text = SM.currentstate.ToString();
         SM.Update();
 
-        if (stunned)
+        while (stunned)
         {
             if (SM.currentstate != hitState)
                 SM.SetState<HitSoldierState>();
@@ -92,7 +91,7 @@ public class Soldier : BaseUnit
             else
             {
                 objective = commander.gameObject;
-                SM.SetState<FleeSoldierState>();
+                SM.SetState<GoToSoldierState>();
             }
         }
         #region Busqueda de enemigos
@@ -114,6 +113,7 @@ public class Soldier : BaseUnit
                     soldierTarget = enemy;
         }
         #endregion
+
         if(enemiesClose.Count >= 3)
         {
             fleeState.attacker = soldierTarget;
@@ -167,9 +167,8 @@ public class Soldier : BaseUnit
     public override void TakeDMG(int DMG, float stun)
     {
         base.TakeDMG(DMG,stun);
-        stunTime = stun;
-        if (stunned) 
-            stunned = false;
+        hitParticle.Play();
+        stunTime += stun;
         stunned = true;
     }
 }

@@ -48,8 +48,6 @@ public class BaseUnit : MonoBehaviour
     protected int currentHealth;
     public int maxHealth;
 
-    public int minDamage;
-    public int maxDamage;
     public float AttackDistance;
     public bool stunned;
     public float stunTime = 0;
@@ -62,8 +60,7 @@ public class BaseUnit : MonoBehaviour
     public float obsAvoidanceWeight;
 
     protected BaseUnit soldierTarget;
-
-    protected bool inCombat;
+    
     public bool isattacking = false;
     protected Node destination;
     protected bool hasDestination;
@@ -74,7 +71,6 @@ public class BaseUnit : MonoBehaviour
     public Transform eyeSightPosition;
     public Transform attackPosition;
     public float eyeSightLength;
-    public float combatLength;
 
     protected Dictionary<string, int> _attacks = new Dictionary<string, int>();
     protected float _totalAttackWeight = 10;

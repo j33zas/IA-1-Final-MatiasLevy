@@ -10,7 +10,10 @@ public class HitSoldierState : SoldierState
     {
         base.Awake();
         _me.AN.SetTrigger("Hit");
-        _me.hitParticle.Play();
+        _me.AN.SetBool("Walking", false);
+        _me.AN.SetBool("Running", false);
+        _me.AN.SetBool("Has destination", false);
+        _me.stunnedParticle.Play();
     }
 
     public override void Execute()
@@ -26,6 +29,8 @@ public class HitSoldierState : SoldierState
     public override void Sleep()
     {
         base.Sleep();
+        _me.stunnedParticle.Clear();
+        _me.stunnedParticle.Stop();
         _me.stunned = false;
     }
 }

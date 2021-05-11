@@ -30,6 +30,9 @@ public class CombatSoldierState : SoldierState
 
         if(Vector3.Distance(_me.transform.position, target.transform.position) >= _me.AttackDistance)
         {
+            _me.AN.SetBool("Has destination", true);
+            _me.AN.SetBool("Walking", true);
+
             if (obstacle)
                 dir += (_me.transform.position - obstacle.transform.position).normalized * _me.obsAvoidanceWeight;
             else
@@ -43,8 +46,9 @@ public class CombatSoldierState : SoldierState
         }
         else
         {
-            if(_me.AN.GetBool("Has destination"))
-                _me.AN.SetBool("Has destination", false);
+
+            _me.AN.SetBool("Has destination", false);
+            _me.AN.SetBool("Walking", false);
 
             if (!_me.isattacking)
                 _me.AttackRouletteWheel();
