@@ -40,7 +40,8 @@ public class BaseUnit : MonoBehaviour
     }
 
     public LayerMask nodesLayer;
-    public LayerMask EnemyLayer;
+    public LayerMask enemyLayer;
+    public string enemyTag;
 
     public StateText debugText;
 
@@ -287,7 +288,7 @@ public class BaseUnit : MonoBehaviour
             Gizmos.DrawWireSphere(eyeSightPosition.position, eyeSightLength);
 
             Gizmos.DrawRay(eyeSightPosition.position, transform.forward * eyeSightLength);
-            var temp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength, EnemyLayer);
+            var temp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength, enemyLayer);
             foreach (var item in temp)
                 Gizmos.DrawRay(eyeSightPosition.position, (item.transform.position - eyeSightPosition.position));
         }

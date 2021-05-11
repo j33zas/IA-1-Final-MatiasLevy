@@ -13,7 +13,7 @@ public class HitBox : MonoBehaviour
     public float lifeTime;
 
     public BaseUnit owner;
-    public LayerMask enemyLayer;
+    public string enemyTag;
     
     private void Update()
     {
@@ -22,13 +22,11 @@ public class HitBox : MonoBehaviour
 
     private void OnTriggerEnter(Collider coll)
     {
-        if(((1 << coll.gameObject.layer) & enemyLayer) == 0)
+        Debug.Log(coll.gameObject.tag + " my owner: " + owner.name + "- my enemy: " + enemyTag);
+        if(coll.gameObject.tag == enemyTag)
         {
             var enemy = coll.GetComponent<BaseUnit>();
-            if(enemy != owner)
-            {
-                enemy.TakeDMG(Random.Range(minDMG, maxDMG), Random.Range(minStun, maxStun));
-            }
+            enemy.TakeDMG(Random.Range(minDMG, maxDMG), Random.Range(minStun, maxStun));
         }
     }
 }

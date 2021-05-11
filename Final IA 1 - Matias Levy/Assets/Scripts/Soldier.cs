@@ -96,7 +96,7 @@ public class Soldier : BaseUnit
             }
         }
         #region Busqueda de enemigos
-        var temp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength, EnemyLayer);
+        var temp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength, enemyLayer);
         if(temp.Length > 0)
         {
             foreach (var item in temp)
@@ -132,14 +132,14 @@ public class Soldier : BaseUnit
     void InstanceAttackHeavy()
     {
         HitBox atk = Instantiate(heavyAttack, attackPosition.position, attackPosition.rotation);
-        atk.enemyLayer = EnemyLayer.value;
+        atk.enemyTag = enemyTag;
         atk.owner = this;
     }
 
     void InstanceAttackLight()
     {
         HitBox atk = Instantiate(lightAttack, attackPosition.position, attackPosition.rotation);
-        atk.enemyLayer = EnemyLayer.value;
+        atk.enemyTag = enemyTag;
         atk.owner = this;
     }
 
