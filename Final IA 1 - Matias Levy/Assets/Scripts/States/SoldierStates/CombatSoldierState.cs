@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CombatSoldierState : SoldierState
+public class CombatSoldierState : BaseUnitState
 {
     public BaseUnit target;
 

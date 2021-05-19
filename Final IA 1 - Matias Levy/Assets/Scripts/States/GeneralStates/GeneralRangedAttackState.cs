@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LightAttackSoldierState : SoldierState
+public class GeneralRangedAttackState : BaseUnitState
 {
-    public LightAttackSoldierState(StateMachine sm, Soldier S) : base(sm, S){}
+    public GeneralRangedAttackState(StateMachine SM, General G) : base(SM,G){ }
 
     public override void Awake()
     {
         base.Awake();
-        _me.isattacking = true;
-        _me.AN.SetTrigger("Light");
     }
 
     public override void Execute()

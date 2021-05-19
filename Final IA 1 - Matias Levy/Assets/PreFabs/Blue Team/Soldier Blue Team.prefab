@@ -52,7 +52,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da8b92d00b65d1047806fbaeabc82bab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gizmos: 1
+  gizmos: 0
   nodesLayer:
     serializedVersion: 2
     m_Bits: 512
@@ -71,16 +71,15 @@ MonoBehaviour:
   obsAvoidanceRadious: 1
   obsAvoidanceWeight: 2
   isattacking: 0
-  enemiesClose: []
+  enemiesSeen: []
   eyeSightPosition: {fileID: 5963919401611428918}
   attackPosition: {fileID: 7270089476940817113}
   eyeSightLength: 8
+  hitParticle: {fileID: 6389826262827882496}
+  stunnedParticle: {fileID: 626771925447956950}
   obstacleMask:
     serializedVersion: 2
     m_Bits: 1024
-  hitParticle: {fileID: 6389826262827882496}
-  stunnedParticle: {fileID: 626771925447956950}
-  objective: {fileID: 0}
   lightAttack: {fileID: 658795498404446759, guid: 0c00f171311757e4b8f44b8580c57895,
     type: 3}
   heavyAttack: {fileID: 39954464594725618, guid: d0f5da8f69dc1344e863d1ea9ea65975,

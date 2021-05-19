@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class Soldier : BaseUnit
 {
-    public ParticleSystem hitParticle;
-    public ParticleSystem stunnedParticle;
-
-    public GameObject objective;
-
     Soldier[] Batallion;
 
     General commander;
@@ -17,27 +12,27 @@ public class Soldier : BaseUnit
     public HitBox heavyAttack;
 
     //states
-    IdleSoldierState idleState;
-    GoToSoldierState walkToState;
-    GoToRunSoldierState runToState;
-    FleeSoldierState fleeState;
+    IdleState idleState;
+    GoToState walkToState;
+    GoToRunState runToState;
+    FleeState fleeState;
+    DieState dieState;
+    HitState hitState;
     LightAttackSoldierState attackLightState;
     HeavyAttackSoldierState attackHeavyState;
-    DieSoldierState dieState;
     CombatSoldierState combatState;
-    HitSoldierState hitState;
 
     private void Start()
     {
-        idleState = new IdleSoldierState(SM, this);
-        walkToState = new GoToSoldierState(SM, this, walkSpeed, "Running");
-        runToState = new GoToRunSoldierState(SM, this, runSpeed, "Walking");
-        fleeState = new FleeSoldierState(SM, this);
+        idleState = new IdleState(SM, this);
+        walkToState = new GoToState(SM, this, walkSpeed, "Running");
+        runToState = new GoToRunState(SM, this, runSpeed, "Walking");
+        fleeState = new FleeState(SM, this);
         attackLightState = new LightAttackSoldierState(SM, this);
         attackHeavyState = new HeavyAttackSoldierState(SM, this);
-        dieState = new DieSoldierState(SM, this);
+        dieState = new DieState(SM, this);
         combatState = new CombatSoldierState(SM, this);
-        hitState = new HitSoldierState(SM, this);
+        hitState = new HitState(SM, this);
 
         SM.AddState(idleState);
         SM.AddState(walkToState);
@@ -48,7 +43,7 @@ public class Soldier : BaseUnit
         SM.AddState(dieState);
         SM.AddState(combatState);
         SM.AddState(hitState);
-        SM.SetState<IdleSoldierState>();
+        SM.SetState<IdleState>();
 
         var temp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength);
         foreach (var item in temp)
@@ -68,14 +63,14 @@ public class Soldier : BaseUnit
         while (stunned)
         {
             if (SM.currentstate != hitState)
-                SM.SetState<HitSoldierState>();
+                SM.SetState<HitState>();
 
             isattacking = false;
             stunTime -= Time.deltaTime;
             if (stunTime <= 0)
             {
                 if(SM.currentstate!= idleState)
-                    SM.SetState<IdleSoldierState>();
+                    SM.SetState<IdleState>();
                 stunTime = 0;
             }
             return;
@@ -100,13 +95,13 @@ public class Soldier : BaseUnit
             {
                 fleeState.attacker = closest;
                 if(SM.currentstate != fleeState)
-                    SM.SetState<FleeSoldierState>();
+                    SM.SetState<FleeState>();
             }
             else
             {
                 objective = commander.gameObject;
                 if(SM.currentstate != walkToState)
-                    SM.SetState<GoToRunSoldierState>();
+                    SM.SetState<GoToRunState>();
             }
         }
         #region Busqueda de enemigos
@@ -133,7 +128,7 @@ public class Soldier : BaseUnit
         {
             fleeState.attacker = soldierTarget;
             if(SM.currentstate != fleeState)
-                SM.SetState<FleeSoldierState>();
+                SM.SetState<FleeState>();
         }
         else
         {
@@ -189,6 +184,6 @@ public class Soldier : BaseUnit
         stunned = true;
         AN.SetFloat("Health", currentHealth);
         if (currentHealth <= 0)
-            SM.SetState<DieSoldierState>();
+            SM.SetState<DieState>();
     }
 }

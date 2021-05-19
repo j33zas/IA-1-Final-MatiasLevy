@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HitSoldierState : SoldierState
+public class HitState : BaseUnitState
 {
-    public HitSoldierState(StateMachine SM, Soldier S):base(SM,S){}
+    public HitState(StateMachine SM, BaseUnit unit):base(SM,unit){}
 
     public override void Awake()
     {

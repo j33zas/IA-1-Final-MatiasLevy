@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FleeSoldierState : SoldierState
+public class FleeState : BaseUnitState
 {
     public BaseUnit attacker;
 
@@ -10,7 +10,7 @@ public class FleeSoldierState : SoldierState
 
     Vector3 dir;
 
-    public FleeSoldierState(StateMachine sm, Soldier S) : base(sm, S){}
+    public FleeState(StateMachine sm, BaseUnit unit) : base(sm, unit){}
 
     public override void Awake()
     {

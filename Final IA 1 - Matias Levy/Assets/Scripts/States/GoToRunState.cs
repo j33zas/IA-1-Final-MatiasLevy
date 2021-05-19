@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GoToRunSoldierState : SoldierState
+public class GoToRunState : BaseUnitState
 {
     GameObject obstacle;
 
@@ -22,7 +22,7 @@ public class GoToRunSoldierState : SoldierState
 
     string animation;
 
-    public GoToRunSoldierState(StateMachine sm, Soldier S, float speed, string anim) : base(sm, S)
+    public GoToRunState(StateMachine sm, BaseUnit unit, float speed, string anim) : base(sm, unit)
     {
         animation = anim;
         mySpeed = speed;

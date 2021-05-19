@@ -46,6 +46,18 @@ public class BaseUnit : MonoBehaviour
             return _COLL;
         }
     }
+    GameObject _objective;
+    public GameObject objective
+    {
+        get
+        {
+            return _objective;
+        }
+        set
+        {
+            _objective = value;
+        }
+    }
 
     public LayerMask nodesLayer;
     public LayerMask enemyLayer;
@@ -79,6 +91,9 @@ public class BaseUnit : MonoBehaviour
     public Transform eyeSightPosition;
     public Transform attackPosition;
     public float eyeSightLength;
+
+    public ParticleSystem hitParticle;
+    public ParticleSystem stunnedParticle;
 
     protected Dictionary<string, int> _attacks = new Dictionary<string, int>();
     protected float _totalAttackWeight = 10;

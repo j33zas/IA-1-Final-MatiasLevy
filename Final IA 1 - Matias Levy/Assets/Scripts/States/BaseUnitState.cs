@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SoldierState : State
+public class BaseUnitState : State
 {
-    protected Soldier _me;
+    protected BaseUnit _me;
 
-    public SoldierState(StateMachine sm, Soldier S) : base (sm)
+    public BaseUnitState(StateMachine sm, BaseUnit S) : base (sm)
     {
         _me = S;
     }

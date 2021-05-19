@@ -2,23 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeavyAttackSoldierState : SoldierState
+public class IdleState : BaseUnitState
 {
-    public HeavyAttackSoldierState(StateMachine sm, Soldier S) : base(sm, S)
+    public IdleState(StateMachine sm, BaseUnit unit):base(sm,unit)
     {
-
     }
-
     public override void Awake()
     {
         base.Awake();
-        _me.isattacking = true;
-        _me.AN.SetTrigger("Heavy");
+        _me.AN.SetBool("Has destination", false);
+        _me.AN.SetBool("Enemy close", false);
+        //Vector3.Distance(_me.eyeSightPosition.position, _me.objective.transform.position)
     }
 
     public override void Execute()
     {
         base.Execute();
+
     }
 
     public override void LateExecute()

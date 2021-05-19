@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DieSoldierState : SoldierState
+public class ChargeSoldierState : BaseUnitState
 {
-    public DieSoldierState(StateMachine sm, Soldier S) : base(sm, S){}
+
+    public ChargeSoldierState(StateMachine SM, General G) : base(SM, G) { }
 
     public override void Awake()
     {
         base.Awake();
-        _me.COLL.isTrigger = true;
-        _me.RB.isKinematic = true;
-        GameObject.Destroy(_me, 10);
     }
 
     public override void Execute()

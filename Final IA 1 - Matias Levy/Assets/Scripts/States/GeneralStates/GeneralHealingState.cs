@@ -2,23 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IdleSoldierState : SoldierState
+public class GeneralHealingState : BaseUnitState
 {
-    public IdleSoldierState(StateMachine sm, Soldier S):base(sm,S)
-    {
-    }
+
+    public GeneralHealingState(StateMachine SM, General G) : base(SM, G) { }
+
     public override void Awake()
     {
         base.Awake();
-        _me.AN.SetBool("Has destination", false);
-        _me.AN.SetBool("Enemy close", false);
-        //Vector3.Distance(_me.eyeSightPosition.position, _me.objective.transform.position)
     }
 
     public override void Execute()
     {
         base.Execute();
-
     }
 
     public override void LateExecute()
