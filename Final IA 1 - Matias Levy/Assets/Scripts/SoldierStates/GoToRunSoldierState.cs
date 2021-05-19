@@ -18,7 +18,15 @@ public class GoToRunSoldierState : SoldierState
 
     float currentTimeLost = 0;
 
-    public GoToRunSoldierState(StateMachine sm, Soldier S) : base(sm, S){}
+    float mySpeed;
+
+    string animation;
+
+    public GoToRunSoldierState(StateMachine sm, Soldier S, float speed, string anim) : base(sm, S)
+    {
+        animation = anim;
+        mySpeed = speed;
+    }
 
     public override void Awake()
     {
@@ -27,7 +35,7 @@ public class GoToRunSoldierState : SoldierState
         currentNode = 0;
 
         _me.AN.SetBool("Has destination", true);
-        _me.AN.SetBool("Running", true);
+        _me.AN.SetBool(animation, true);
 
         _path = _me.GetAstarPath(_me.FindClosestNode(_me.eyeSightPosition, _me.eyeSightLength), _me.FindClosestNode(_me.objective.transform, _me.eyeSightLength)).ToArray();
 
@@ -49,7 +57,7 @@ public class GoToRunSoldierState : SoldierState
             else//sino camino hacia donde debo
                 _me.transform.forward = Vector3.Lerp(_me.transform.forward, _path[currentNode].transform.position - _me.transform.position, _me.rotSpeed * Time.deltaTime * rotSpeedMultiplier);
 
-            _me.transform.position += _me.transform.forward * _me.runSpeed * Time.deltaTime;
+            _me.transform.position += _me.transform.forward * mySpeed * Time.deltaTime;
             if (Vector3.Distance(_me.transform.position, _path[currentNode].transform.position) <= 0.3f)
             {
                 if (currentNode > _path.Length)
@@ -79,6 +87,6 @@ public class GoToRunSoldierState : SoldierState
     {
         base.Sleep();
         _me.AN.SetBool("Has destination", false);
-        _me.AN.SetBool("Running", false);
+        _me.AN.SetBool(animation, false);
     }
 }

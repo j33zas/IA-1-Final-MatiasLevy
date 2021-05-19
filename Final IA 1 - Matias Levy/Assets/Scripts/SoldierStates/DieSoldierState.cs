@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class DieSoldierState : SoldierState
 {
-    public DieSoldierState(StateMachine sm, Soldier S) : base(sm, S)
-    {
-
-    }
+    public DieSoldierState(StateMachine sm, Soldier S) : base(sm, S){}
 
     public override void Awake()
     {
         base.Awake();
+        _me.COLL.isTrigger = true;
+        _me.RB.isKinematic = true;
+        GameObject.Destroy(_me, 10);
     }
 
     public override void Execute()

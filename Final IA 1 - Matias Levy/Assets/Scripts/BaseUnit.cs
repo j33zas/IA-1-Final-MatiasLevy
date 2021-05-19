@@ -38,6 +38,14 @@ public class BaseUnit : MonoBehaviour
             return _RB;
         }
     }
+    Collider _COLL;
+    public Collider COLL
+    {
+        get
+        {
+            return _COLL;
+        }
+    }
 
     public LayerMask nodesLayer;
     public LayerMask enemyLayer;
@@ -66,7 +74,7 @@ public class BaseUnit : MonoBehaviour
     protected bool hasDestination;
     protected float distanceToDestination;
 
-    public List<BaseUnit> enemiesClose;
+    public List<BaseUnit> enemiesSeen;
 
     public Transform eyeSightPosition;
     public Transform attackPosition;
@@ -85,11 +93,11 @@ public class BaseUnit : MonoBehaviour
     {
         _AU = GetComponentInChildren<AudioSource>();
         _AN = GetComponentInChildren<Animator>();
-        _SM = new StateMachine();
         _RB = GetComponent<Rigidbody>();
-        enemiesClose = new List<BaseUnit>();
+        _COLL = GetComponent<Collider>();
+        _SM = new StateMachine();
+        enemiesSeen = new List<BaseUnit>();
         currentHealth = maxHealth;
-
 
         if (!_attacks.ContainsKey("Heavy"))
             _attacks.Add("Heavy", 4);
@@ -119,58 +127,6 @@ public class BaseUnit : MonoBehaviour
         }
         return Closest;
     }
-
-    //public void GetPath()
-    //{
-    //    foreach (var item in _openNodes)
-    //        item.Reset();
-    //    foreach (var item in _closedNodes)
-    //        item.Reset();
-    //    foreach (var item in pathNodes)
-    //        item.Reset();
-    //    _openNodes = new List<Node>();
-    //    _closedNodes = new List<Node>();
-    //    pathNodes = new List<Node>();
-
-    //    while (_openNodes.Count > 0)
-    //    {
-    //        Node current = SearchNextNode();
-    //        _closedNodes.Add(current);
-    //        foreach (var item in current.neighbors)
-    //        {
-    //            if (_closedNodes.Contains(item))
-    //                continue;
-
-    //            if (!_openNodes.Contains(item))
-    //            {
-    //                _openNodes.Add(item);
-
-    //                item.h = Mathf.Abs(aStarEnd.transform.position.x - item.transform.position.x)
-    //                           + Mathf.Abs(aStarEnd.transform.position.y - item.transform.position.y)
-    //                           + Mathf.Abs(aStarEnd.transform.position.z - item.transform.position.z);
-    //            }
-    //            float distanceToNeighbor = Vector3.Distance(current.transform.position, item.transform.position);
-    //            float newG = current.g + distanceToNeighbor;
-    //            if (newG < item.g)
-    //            {
-    //                item.g = newG;
-    //                item.f = item.g + item.h;
-    //                item.previous = current;
-    //            }
-    //        }
-    //        if (_openNodes.Contains(aStarEnd))
-    //        {
-    //            pathNodes.Add(aStarEnd);
-    //            Node node = aStarEnd.previous;
-    //            while (node)
-    //            {
-    //                pathNodes.Insert(0, node);
-    //                node = node.previous;
-    //            }
-    //        }
-    //    }
-    //}
-
     public List<Node> GetAstarPath(Node startNode, Node EndNode)
     {
         foreach (var item in _openNodes)

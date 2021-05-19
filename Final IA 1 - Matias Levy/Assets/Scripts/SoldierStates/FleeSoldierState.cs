@@ -6,14 +6,17 @@ public class FleeSoldierState : SoldierState
 {
     public BaseUnit attacker;
 
-    Vector3 _dir = new Vector3();
+    GameObject obstacle;
+
+    Vector3 dir;
 
     public FleeSoldierState(StateMachine sm, Soldier S) : base(sm, S){}
 
     public override void Awake()
     {
         base.Awake();
-        _dir = -(_me.objective.transform.position - _me.transform.position);
+
+        _me.transform.forward = -(attacker.transform.position - _me.transform.position).normalized;
 
         _me.AN.SetBool("Has destination", true);
         _me.AN.SetBool("Running", true);
@@ -23,9 +26,18 @@ public class FleeSoldierState : SoldierState
     {
         base.Execute();
 
-        _dir = -(attacker.transform.position - _me.transform.position).normalized;
+        dir = -(attacker.transform.position - _me.transform.position).normalized;
 
-        _me.transform.forward = Vector3.Lerp(_me.transform.forward, _dir, _me.rotSpeed * Time.deltaTime);
+        obstacle = _me.GetObstacle(_me.transform, _me.obsAvoidanceRadious, _me.obstacleMask);
+
+        if (obstacle)//Si hay un obstaculo lo esquivo
+            dir = Vector3.Lerp(_me.transform.forward, (obstacle.transform.position - _me.transform.position), Time.deltaTime * _me.rotSpeed);
+        else//sino camino hacia donde debo
+            dir = Vector3.Lerp(_me.transform.forward, -(attacker.transform.position - _me.transform.position), _me.rotSpeed * Time.deltaTime);
+
+        dir = Vector3.Scale(dir, new Vector3(1, 0, 1));// para que no roten hacia arria y abajo, solo para los costados
+
+        _me.transform.forward = Vector3.Lerp(_me.transform.forward, dir, _me.rotSpeed * Time.deltaTime);
 
         _me.transform.position += _me.transform.forward * _me.runSpeed * Time.deltaTime;
     }
