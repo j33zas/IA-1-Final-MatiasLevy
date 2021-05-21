@@ -65,7 +65,14 @@ public class BaseUnit : MonoBehaviour
 
     public StateText debugText;
 
-    protected int currentHealth;
+    protected int _currentHealth;
+    public int currentHealth
+    {
+        get
+        {
+            return _currentHealth;
+        }
+    }
     public int maxHealth;
 
     public float AttackDistance;
@@ -112,7 +119,7 @@ public class BaseUnit : MonoBehaviour
         _COLL = GetComponent<Collider>();
         _SM = new StateMachine();
         enemiesSeen = new List<BaseUnit>();
-        currentHealth = maxHealth;
+        _currentHealth = maxHealth;
 
         if (!_attacks.ContainsKey("Heavy"))
             _attacks.Add("Heavy", 4);
@@ -238,7 +245,7 @@ public class BaseUnit : MonoBehaviour
 
     public virtual void TakeDMG(int DMG, float stun)
     {
-        currentHealth -= DMG;
+        _currentHealth -= DMG;
     }
 
     private void OnDrawGizmos()

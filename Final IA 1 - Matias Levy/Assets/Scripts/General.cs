@@ -9,7 +9,7 @@ public class General : BaseUnit
     public HitBox heavyATK;
 
     List<Soldier> myTroops = new List<Soldier>();
-    Soldier[] soldiersClose;
+    List<Soldier> soldiersClose = new List<Soldier>();
 
     IdleState idleState;
     GoToState WalkToState;
@@ -63,6 +63,45 @@ public class General : BaseUnit
     private void Update()
     {
         SM.Update();
+
+        var temp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength, gameObject.layer);
+        foreach (var item in temp)
+        {
+            var soldier= item.GetComponent<Soldier>();
+            if(soldier)
+            {
+                if(!soldiersClose.Contains(soldier))
+                {
+                    soldiersClose.Add(soldier);
+                }
+            }
+        }
+
+        if (stunned)
+        {
+            if (SM.currentstate != hitState)
+                SM.SetState<HitState>();
+            stunTime -= Time.deltaTime;
+            if(stunTime<=0)
+            {
+                SM.SetState<IdleState>();
+                stunTime = 0;
+                stunned = false;
+            }
+        }
+
+        foreach (var ally in soldiersClose)
+        {
+            if(ally.currentHealth <=20)
+            {
+                var obj = objective.GetComponent<BaseUnit>();
+                if (obj && ally.currentHealth < obj.currentHealth)
+                    objective = ally.gameObject;
+                if(SM.currentstate != healState)
+                    SM.SetState<GeneralHealingState>();
+            }
+        }
+
 
     }
 }

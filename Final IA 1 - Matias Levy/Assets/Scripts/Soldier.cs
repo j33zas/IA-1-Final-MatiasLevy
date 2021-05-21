@@ -76,7 +76,7 @@ public class Soldier : BaseUnit
             return;
         }
 
-        if (currentHealth <= 20)
+        if (_currentHealth <= 20)
         {
             BaseUnit closest = null;
             if(enemiesSeen.Count >= 1)
@@ -182,8 +182,8 @@ public class Soldier : BaseUnit
         hitParticle.Play();
         stunTime += stun;
         stunned = true;
-        AN.SetFloat("Health", currentHealth);
-        if (currentHealth <= 0)
+        AN.SetFloat("Health", _currentHealth);
+        if (_currentHealth <= 0)
             SM.SetState<DieState>();
     }
 }
