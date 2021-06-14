@@ -11,7 +11,7 @@ public class DieState : BaseUnitState
         base.Awake();
         _me.COLL.isTrigger = true;
         _me.RB.isKinematic = true;
-        GameObject.Destroy(_me, 10);
+        _me.AN.SetTrigger("Die");
     }
 
     public override void Execute()

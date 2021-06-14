@@ -27,11 +27,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1259080817080446776}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0.0000002980232}
-  m_LocalPosition: {x: 0.7, y: 2.5, z: 0}
+  m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7291704111985551392}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 180.00002, z: 0}
 --- !u!23 &3778942184068671804
 MeshRenderer:
@@ -82,7 +82,7 @@ TextMesh:
   m_OffsetZ: 0
   m_CharacterSize: 0.2
   m_LineSpacing: 1
-  m_Anchor: 0
+  m_Anchor: 1
   m_Alignment: 0
   m_TabSize: 4
   m_FontSize: 0
@@ -169,6 +169,7 @@ Transform:
   - {fileID: 7253976557819575029}
   - {fileID: 1270486872315537793}
   - {fileID: 869817723769406643}
+  - {fileID: 5471512181076984376}
   - {fileID: 2886381495489576610}
   - {fileID: 4820229454310906731}
   - {fileID: 8169542078956250547}
@@ -196,9 +197,15 @@ MonoBehaviour:
     m_Bits: 4096
   enemyTag: Red
   debugText: {fileID: 5837079200948098190}
+  attackString:
+  - Light
+  - Heavy
+  - Ranged
+  attackValues: 020000000400000006000000
   maxHealth: 150
   AttackDistance: 2
   stunned: 0
+  fleeing: 0
   stunTime: 0
   rotSpeed: 3
   walkSpeed: 2
@@ -215,6 +222,14 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 1024
+  RangedATK: {fileID: 39954464594725618, guid: bba04c015ea0a2c4d86be6a702ed9f3b, type: 3}
+  lightATK: {fileID: 658795498404446759, guid: 9520d234757f3504989f5474059c7ab4, type: 3}
+  heavyATK: {fileID: 8570393999566340587, guid: 9d878fe1770239a449722f184bcf0882,
+    type: 3}
+  rangedPos: {fileID: 5471512181076984376}
+  healSpeed: 3
+  healing: 0
+  HealParticles: {fileID: 16453227992042171}
 --- !u!95 &2069349824036322905
 Animator:
   serializedVersion: 3
@@ -293,6 +308,36 @@ Transform:
   m_Father: {fileID: 7291704111985551392}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &9219680822198980956
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5471512181076984376}
+  m_Layer: 11
+  m_Name: Atk ranged Spawn
+  m_TagString: Blue
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5471512181076984376
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9219680822198980956}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.562, y: 2.127, z: 0.577}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7291704111985551392}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &4802825322010143195
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -343,7 +388,7 @@ PrefabInstance:
     - target: {fileID: 3730980587090037864, guid: ab981b8d659d21d4197e8514243833b3,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3730980587090037864, guid: ab981b8d659d21d4197e8514243833b3,
         type: 3}
@@ -466,7 +511,7 @@ PrefabInstance:
     - target: {fileID: 9500000, guid: 11f62d5da999c74499fd5887607e2876, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 3824225d97b4142469c41c78cb8d970b, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 100122, guid: 11f62d5da999c74499fd5887607e2876, type: 3}
       propertyPath: m_Layer
       value: 11
@@ -1037,7 +1082,7 @@ PrefabInstance:
     - target: {fileID: 2974755059317975699, guid: 9af30b14b48db0d4c8a826296af97a94,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2974755059317975699, guid: 9af30b14b48db0d4c8a826296af97a94,
         type: 3}

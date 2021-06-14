@@ -58,13 +58,7 @@ public class BaseUnit : MonoBehaviour
             _objective = value;
         }
     }
-
-    public LayerMask nodesLayer;
-    public LayerMask enemyLayer;
-    public string enemyTag;
-
-    public StateText debugText;
-
+    [SerializeField]
     protected int _currentHealth;
     public int currentHealth
     {
@@ -72,11 +66,26 @@ public class BaseUnit : MonoBehaviour
         {
             return _currentHealth;
         }
+        set
+        {
+            _currentHealth = value;
+        }
     }
+
+    public LayerMask nodesLayer;
+    public LayerMask enemyLayer;
+    public string enemyTag;
+
+    public StateText debugText;
+
+    public string[] attackString;
+    public int[] attackValues;
+
     public int maxHealth;
 
     public float AttackDistance;
     public bool stunned;
+    public bool fleeing;
     public float stunTime = 0;
 
     public float rotSpeed;
@@ -121,10 +130,11 @@ public class BaseUnit : MonoBehaviour
         enemiesSeen = new List<BaseUnit>();
         _currentHealth = maxHealth;
 
-        if (!_attacks.ContainsKey("Heavy"))
-            _attacks.Add("Heavy", 4);
-        if (!_attacks.ContainsKey("Light"))
-            _attacks.Add("Light", 6);
+        for (int i = 0; i < attackString.Length; i++)
+            _attacks.Add(attackString[i], attackValues[i]); //agrego los ataques al diccionario
+
+        foreach (var item in _attacks)
+            _totalAttackWeight += item.Value;//defino el peso total de los ataques
     }
 
     public Node FindClosestNode(Transform target, float viewRange)

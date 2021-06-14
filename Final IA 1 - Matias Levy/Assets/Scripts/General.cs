@@ -8,8 +8,13 @@ public class General : BaseUnit
     public HitBox lightATK;
     public HitBox heavyATK;
 
+    public Transform rangedPos;
+    public float healSpeed;
+    public bool healing = false;
+
     List<Soldier> myTroops = new List<Soldier>();
     List<Soldier> soldiersClose = new List<Soldier>();
+    public ParticleSystem HealParticles;
 
     IdleState idleState;
     GoToState WalkToState;
@@ -62,21 +67,8 @@ public class General : BaseUnit
 
     private void Update()
     {
+        debugText.text = SM.currentstate.ToString();
         SM.Update();
-
-        var temp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength, gameObject.layer);
-        foreach (var item in temp)
-        {
-            var soldier= item.GetComponent<Soldier>();
-            if(soldier)
-            {
-                if(!soldiersClose.Contains(soldier))
-                {
-                    soldiersClose.Add(soldier);
-                }
-            }
-        }
-
         if (stunned)
         {
             if (SM.currentstate != hitState)
@@ -88,20 +80,97 @@ public class General : BaseUnit
                 stunTime = 0;
                 stunned = false;
             }
+            return;
         }
+        if (healing)
+        {
+            return;
+        }
+
+        var allyTemp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength);
+        foreach (var item in allyTemp)
+        {
+            var soldier = item.GetComponent<Soldier>();
+            if(soldier && soldier.gameObject.tag == gameObject.tag)
+                if(!soldiersClose.Contains(soldier))
+                    soldiersClose.Add(soldier);
+        }
+        var enemyTemp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength, enemyLayer);
+        if(enemyTemp.Length>0)
+        {
+            foreach (var item in enemyTemp)
+            {
+                var E = item.GetComponent<BaseUnit>();
+                if (E)
+                    if (!enemiesSeen.Contains(E))
+                        enemiesSeen.Add(E);
+            }
+        }
+        if(enemiesSeen.Count > 0)
+        {
+            soldierTarget = enemiesSeen[0];
+            if(soldierTarget)
+                foreach (var enemy in enemiesSeen)
+                    if (Vector3.Distance(enemy.transform.position, transform.position) > Vector3.Distance(soldierTarget.transform.position, transform.position))
+                        soldierTarget = enemy;
+        }
+
+        if(soldierTarget)
+            if(Vector3.Distance(transform.position, soldierTarget.transform.position) <= AttackDistance)
+                if (SM.currentstate != combatState && !isattacking)
+                    SM.SetState<GeneralCombatState>();
 
         foreach (var ally in soldiersClose)
         {
-            if(ally.currentHealth <=20)
+            if(ally.currentHealth <= 20)
             {
-                var obj = objective.GetComponent<BaseUnit>();
-                if (obj && ally.currentHealth < obj.currentHealth)
+                if(!healing)
+                {
                     objective = ally.gameObject;
-                if(SM.currentstate != healState)
                     SM.SetState<GeneralHealingState>();
+                }
             }
         }
 
+    }
+    void InstanceLight()
+    {
+        HitBox atk = Instantiate(lightATK, attackPosition.position, attackPosition.rotation);
+        atk.owner = this;
+        atk.enemyTag = enemyTag;
+    }
+    void InstanceHeavy()
+    {
+        HitBox atk = Instantiate(heavyATK, soldierTarget.transform.position, transform.rotation);
+        atk.owner = this;
+        atk.enemyTag = enemyTag;
+    }
+    void InstanceRanged()
+    {
+        HitBox atk = Instantiate(RangedATK, rangedPos.position, rangedPos.rotation);
+        atk.owner = this;
+        atk.enemyTag = enemyTag;
+    }
+    public override void AttackRouletteWheel()
+    {
+        base.AttackRouletteWheel();
+        var R = Random.Range(0, _totalAttackWeight);
+        foreach (var Attack in _attacks)
+        {
+            R -= Attack.Value;
+            if (Attack.Key == "Heavy")
+                SM.SetState<GeneralHeavyAttackState>();
+            else if (Attack.Key == "Light")
+                SM.SetState<GeneralLightAttackState>();
+            else if (Attack.Key == "Ranged")
+                SM.SetState<GeneralRangedAttackState>();
+        }
+    }
+
+    public override void TakeDMG(int DMG, float stun)
+    {
+        base.TakeDMG(DMG, stun);
+        stunTime = stun / 2;
 
     }
 }

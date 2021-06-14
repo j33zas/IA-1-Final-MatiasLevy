@@ -61,6 +61,10 @@ MonoBehaviour:
     m_Bits: 2048
   enemyTag: Blue
   debugText: {fileID: 5112382546464593591}
+  attackString:
+  - Light
+  - Heavy
+  attackValues: 0200000008000000
   maxHealth: 100
   AttackDistance: 1.2
   stunned: 0
@@ -71,16 +75,15 @@ MonoBehaviour:
   obsAvoidanceRadious: 1
   obsAvoidanceWeight: 2
   isattacking: 0
-  enemiesClose: []
+  enemiesSeen: []
   eyeSightPosition: {fileID: 5963919401611428918}
   attackPosition: {fileID: 2115636045838630020}
   eyeSightLength: 8
+  hitParticle: {fileID: 4735621815956407286}
+  stunnedParticle: {fileID: 1107720832618541794}
   obstacleMask:
     serializedVersion: 2
     m_Bits: 1024
-  hitParticle: {fileID: 4735621815956407286}
-  stunnedParticle: {fileID: 1107720832618541794}
-  objective: {fileID: 0}
   lightAttack: {fileID: 658795498404446759, guid: 0c00f171311757e4b8f44b8580c57895,
     type: 3}
   heavyAttack: {fileID: 39954464594725618, guid: d0f5da8f69dc1344e863d1ea9ea65975,

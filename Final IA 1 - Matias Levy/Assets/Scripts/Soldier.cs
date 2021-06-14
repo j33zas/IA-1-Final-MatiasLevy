@@ -56,10 +56,16 @@ public class Soldier : BaseUnit
 
     private void Update()
     {
-        AN.SetBool("Stunned", stunned);
         debugText.text = SM.currentstate.ToString();
-        SM.Update();
+        if (SM.currentstate == dieState)
+            return;
+        AN.SetBool("Stunned", stunned);
 
+        foreach (var item in enemiesSeen)
+            if (item == null)
+                enemiesSeen.Remove(item);
+
+        SM.Update();
         while (stunned)
         {
             if (SM.currentstate != hitState)
@@ -91,17 +97,20 @@ public class Soldier : BaseUnit
                 }
             }
 
-            if(Vector3.Distance(closest.transform.position,transform.position) <= 3)
+            if(closest)
             {
-                fleeState.attacker = closest;
-                if(SM.currentstate != fleeState)
-                    SM.SetState<FleeState>();
-            }
-            else
-            {
+                if(Vector3.Distance(closest.transform.position,transform.position) <= 3)
+                {
+                    fleeState.attacker = closest;
+                    if(!fleeing)
+                        SM.SetState<FleeState>();
+                }
+                else
+                {
                 objective = commander.gameObject;
                 if(SM.currentstate != walkToState)
                     SM.SetState<GoToRunState>();
+                }
             }
         }
         #region Busqueda de enemigos
@@ -115,28 +124,28 @@ public class Soldier : BaseUnit
                         enemiesSeen.Add(soldier);
             }
         }
+        #endregion
         if(enemiesSeen.Count > 0)
         {
-            soldierTarget = enemiesSeen[0].GetComponent<Soldier>();
-            foreach (Soldier enemy in enemiesSeen)
-                if (Vector3.Distance(enemy.transform.position, transform.position) > Vector3.Distance(soldierTarget.transform.position, transform.position))
-                    soldierTarget = enemy;
-        }
-        #endregion
-
-        if(enemiesSeen.Count >= 3)
-        {
-            fleeState.attacker = soldierTarget;
-            if(SM.currentstate != fleeState)
-                SM.SetState<FleeState>();
-        }
-        else
-        {
-            if(!isattacking)
+            soldierTarget = enemiesSeen[0];
+            if(soldierTarget)
+                foreach (Soldier enemy in enemiesSeen)
+                    if (Vector3.Distance(enemy.transform.position, transform.position) > Vector3.Distance(soldierTarget.transform.position, transform.position))
+                        soldierTarget = enemy;
+            if(enemiesSeen.Count >= 3)
             {
-                combatState.target = soldierTarget;
-                if(SM.currentstate != combatState)
-                    SM.SetState<CombatSoldierState>();
+                fleeState.attacker = soldierTarget;
+                if(!fleeing)
+                    SM.SetState<FleeState>();
+            }
+            else
+            {
+                if(!isattacking)
+                {
+                    combatState.target = soldierTarget;
+                    if(SM.currentstate != combatState)
+                        SM.SetState<CombatSoldierState>();
+                }
             }
         }
     }
@@ -160,18 +169,24 @@ public class Soldier : BaseUnit
         isattacking = false;
     }
 
+    void Die()
+    {
+        Destroy(gameObject);
+    }
+
     public override void AttackRouletteWheel()
     {
         float R = Random.Range(0, _totalAttackWeight);
+        R = Mathf.RoundToInt(R);
         foreach (var Attack in _attacks)
         {
             R -= Attack.Value;
             if (R <= 0)
             {
-                if (Attack.Key == "Heavy")
-                    SM.SetState<HeavyAttackSoldierState>();
-                else if (Attack.Key == "Light")
+                if (Attack.Key == "Light")
                     SM.SetState<LightAttackSoldierState>();
+                else if (Attack.Key == "Heavy")
+                    SM.SetState<HeavyAttackSoldierState>();
             }
         }
     }

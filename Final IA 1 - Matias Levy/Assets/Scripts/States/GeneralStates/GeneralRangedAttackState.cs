@@ -9,6 +9,8 @@ public class GeneralRangedAttackState : BaseUnitState
     public override void Awake()
     {
         base.Awake();
+        _me.isattacking = true;
+        _me.AN.SetTrigger("Ranged");
     }
 
     public override void Execute()

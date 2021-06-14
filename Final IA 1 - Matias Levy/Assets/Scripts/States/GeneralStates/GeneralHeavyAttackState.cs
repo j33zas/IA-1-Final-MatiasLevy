@@ -9,6 +9,8 @@ public class GeneralHeavyAttackState : BaseUnitState
     public override void Awake()
     {
         base.Awake();
+        _me.isattacking = true;
+        _me.AN.SetTrigger("Heavy");
     }
 
     public override void Execute()

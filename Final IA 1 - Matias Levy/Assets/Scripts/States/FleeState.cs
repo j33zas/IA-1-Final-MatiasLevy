@@ -8,6 +8,9 @@ public class FleeState : BaseUnitState
 
     GameObject obstacle;
 
+    float timeTillScape = 2;
+    float CurrentTime = 0;
+
     Vector3 dir;
 
     public FleeState(StateMachine sm, BaseUnit unit) : base(sm, unit){}
@@ -17,7 +20,7 @@ public class FleeState : BaseUnitState
         base.Awake();
 
         _me.transform.forward = -(attacker.transform.position - _me.transform.position).normalized;
-
+        _me.fleeing = true;
         _me.AN.SetBool("Has destination", true);
         _me.AN.SetBool("Running", true);
     }
@@ -40,6 +43,16 @@ public class FleeState : BaseUnitState
         _me.transform.forward = Vector3.Lerp(_me.transform.forward, dir, _me.rotSpeed * Time.deltaTime);
 
         _me.transform.position += _me.transform.forward * _me.runSpeed * Time.deltaTime;
+
+        if(Vector3.Distance(attacker.transform.position, _me.transform.position) > 2)
+        {
+            CurrentTime += Time.deltaTime;
+            if (CurrentTime >= timeTillScape)
+            {
+                dir = Vector3.zero;
+                _me.fleeing = false;
+            }
+        }
     }
 
     public override void LateExecute()

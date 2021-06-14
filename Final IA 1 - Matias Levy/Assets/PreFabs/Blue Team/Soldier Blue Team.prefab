@@ -61,6 +61,10 @@ MonoBehaviour:
     m_Bits: 4096
   enemyTag: Red
   debugText: {fileID: 1438337960072616500}
+  attackString:
+  - Light
+  - Heavy
+  attackValues: 0200000008000000
   maxHealth: 100
   AttackDistance: 1.2
   stunned: 0
