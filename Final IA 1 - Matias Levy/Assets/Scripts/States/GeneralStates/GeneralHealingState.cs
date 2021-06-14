@@ -15,7 +15,7 @@ public class GeneralHealingState : BaseUnitState
     public override void Awake()
     {
         base.Awake();
-        _me.AN.SetBool("Healing", true);
+        _me.AN.SetTrigger("Healing");
         _meG = _me.GetComponent<General>();
         _meG.HealParticles.Play();
         _meG.healing = true;
@@ -26,13 +26,21 @@ public class GeneralHealingState : BaseUnitState
     {
         base.Execute();
         if(toHeal)
+        {
             dir = (toHeal.transform.position - _me.transform.position).normalized;
+        }
 
         if(Vector3.Angle(_me.transform.forward, toHeal.transform.position - _me.transform.position) <= 5)
+        {
             if (toHeal.currentHealth<= 80)//curo hasta 80 de vida
+            {
                 toHeal.currentHealth += Mathf.RoundToInt(_meG.healSpeed);
+            }
+        }
         else
+        {
             _me.transform.forward = Vector3.Lerp(_me.transform.forward, dir.normalized, Time.deltaTime * _me.rotSpeed);
+        }
     }
 
     public override void LateExecute()
@@ -42,7 +50,6 @@ public class GeneralHealingState : BaseUnitState
 
     public override void Sleep()
     {
-        _me.AN.SetBool("Healing", false);
         base.Sleep();
     }
 }

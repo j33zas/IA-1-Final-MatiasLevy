@@ -87,10 +87,16 @@ public class General : BaseUnit
         Debug.Log(healing);
         if (healing)
         {
+            if (SM.currentstate != healState)
+                SM.SetState<GeneralHealingState>();
+
             var S = objective.GetComponent<BaseUnit>();
             if (S)
                 if(S.currentHealth > 80)
+                {
                     healing = false;
+                    SM.SetState<IdleState>();
+                }
             return;
         }
 
@@ -131,7 +137,7 @@ public class General : BaseUnit
         {
             if(ally.currentHealth <= 20)
             {
-                if(!healing)
+                if(!healing && SM.currentstate != healState)
                 {
                     objective = ally.gameObject;
                     SM.SetState<GeneralHealingState>();
