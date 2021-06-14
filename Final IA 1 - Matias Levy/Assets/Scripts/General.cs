@@ -68,7 +68,9 @@ public class General : BaseUnit
     private void Update()
     {
         debugText.text = SM.currentstate.ToString();
+
         SM.Update();
+
         if (stunned)
         {
             if (SM.currentstate != hitState)
@@ -82,8 +84,13 @@ public class General : BaseUnit
             }
             return;
         }
+        Debug.Log(healing);
         if (healing)
         {
+            var S = objective.GetComponent<BaseUnit>();
+            if (S)
+                if(S.currentHealth > 80)
+                    healing = false;
             return;
         }
 

@@ -27,13 +27,12 @@ public class GeneralHealingState : BaseUnitState
         base.Execute();
         if(toHeal)
             dir = (toHeal.transform.position - _me.transform.position).normalized;
-        _me.transform.forward = Vector3.Lerp(_me.transform.forward, dir.normalized, Time.deltaTime * _me.rotSpeed);
 
-        if (toHeal.currentHealth <= toHeal.maxHealth * 9/(10))
-            toHeal.currentHealth = Mathf.RoundToInt(Mathf.Lerp(toHeal.currentHealth, toHeal.maxHealth, Time.deltaTime * _meG.healSpeed));
+        if(Vector3.Angle(_me.transform.forward, toHeal.transform.position - _me.transform.position) <= 5)
+            if (toHeal.currentHealth<= 80)//curo hasta 80 de vida
+                toHeal.currentHealth += Mathf.RoundToInt(_meG.healSpeed);
         else
-            _meG.healing = false;
-
+            _me.transform.forward = Vector3.Lerp(_me.transform.forward, dir.normalized, Time.deltaTime * _me.rotSpeed);
     }
 
     public override void LateExecute()
