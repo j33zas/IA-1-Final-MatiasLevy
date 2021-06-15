@@ -84,7 +84,7 @@ public class General : BaseUnit
             }
             return;
         }
-        Debug.Log(healing);
+
         if (healing)
         {
             if (SM.currentstate != healState)

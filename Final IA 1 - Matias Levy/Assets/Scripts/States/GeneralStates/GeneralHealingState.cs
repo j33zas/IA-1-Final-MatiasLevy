@@ -25,6 +25,7 @@ public class GeneralHealingState : BaseUnitState
     public override void Execute()
     {
         base.Execute();
+        _meG.HealParticles.transform.position = toHeal.transform.position;
         if(toHeal)
         {
             dir = (toHeal.transform.position - _me.transform.position).normalized;
@@ -50,6 +51,8 @@ public class GeneralHealingState : BaseUnitState
 
     public override void Sleep()
     {
+        _meG.HealParticles.Stop();
+        _meG.HealParticles.transform.position = _me.transform.position;
         base.Sleep();
     }
 }

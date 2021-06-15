@@ -59,6 +59,6 @@ public class Node : MonoBehaviour
         }
 
         //Gizmos.DrawWireSphere(transform.position, radious);
-        Gizmos.DrawSphere(transform.position, 0.3f);        
+        Gizmos.DrawSphere(transform.position, 0.1f);        
     }
 }
