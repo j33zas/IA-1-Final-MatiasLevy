@@ -52,7 +52,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da8b92d00b65d1047806fbaeabc82bab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gizmos: 1
+  gizmos: 0
+  _currentHealth: 0
   nodesLayer:
     serializedVersion: 2
     m_Bits: 512
@@ -68,6 +69,7 @@ MonoBehaviour:
   maxHealth: 100
   AttackDistance: 1.2
   stunned: 0
+  fleeing: 0
   stunTime: 0
   rotSpeed: 2.5
   walkSpeed: 1

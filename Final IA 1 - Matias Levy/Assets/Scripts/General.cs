@@ -130,8 +130,17 @@ public class General : BaseUnit
 
         if(soldierTarget)
             if(Vector3.Distance(transform.position, soldierTarget.transform.position) <= AttackDistance)
+            {
                 if (SM.currentstate != combatState && !isattacking)
                     SM.SetState<GeneralCombatState>();
+            }
+            else if(Vector3.Distance(transform.position, soldierTarget.transform.position) <= eyeSightLength)
+            {
+                objective = soldierTarget.gameObject;
+                if (SM.currentstate != runToState)
+                    SM.SetState<GoToRunState>();
+            }
+
 
         foreach (var ally in soldiersClose)
         {

@@ -132,20 +132,11 @@ public class Soldier : BaseUnit
                 foreach (Soldier enemy in enemiesSeen)
                     if (Vector3.Distance(enemy.transform.position, transform.position) > Vector3.Distance(soldierTarget.transform.position, transform.position))
                         soldierTarget = enemy;
-            if(enemiesSeen.Count >= 3)
+            if(!isattacking)
             {
-                fleeState.attacker = soldierTarget;
-                if(!fleeing)
-                    SM.SetState<FleeState>();
-            }
-            else
-            {
-                if(!isattacking)
-                {
-                    combatState.target = soldierTarget;
-                    if(SM.currentstate != combatState)
-                        SM.SetState<CombatSoldierState>();
-                }
+                combatState.target = soldierTarget;
+                if(SM.currentstate != combatState)
+                    SM.SetState<CombatSoldierState>();
             }
         }
     }
