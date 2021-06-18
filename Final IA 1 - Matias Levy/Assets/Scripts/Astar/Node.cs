@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Node : MonoBehaviour
 {
+    public bool gizmos;
     public float g;
     public float h;
     public float f;
@@ -43,22 +44,25 @@ public class Node : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (isBlocked)
-            Gizmos.color = Color.red;
-        else if (isPath)
+        if(gizmos)
         {
-            Gizmos.color = Color.green;
-            if(previous)
-                Gizmos.DrawLine(transform.position, previous.transform.position);
-        }
-        else
-        {
-            Gizmos.color = Color.blue;
-            foreach (var item in neighbors)
-                Gizmos.DrawLine(transform.position, item.transform.position);
-        }
+            if (isBlocked)
+                Gizmos.color = Color.red;
+            //else if (isPath)
+            //{
+            //    Gizmos.color = Color.green;
+            //    if(previous)
+            //        Gizmos.DrawLine(transform.position, previous.transform.position);
+            //}
+            else
+            {
+                Gizmos.color = Color.blue;
+                foreach (var item in neighbors)
+                    Gizmos.DrawLine(transform.position, item.transform.position);
+            }
 
-        //Gizmos.DrawWireSphere(transform.position, radious);
+            Gizmos.DrawWireSphere(transform.position, radious);
+        }
         Gizmos.DrawSphere(transform.position, 0.1f);        
     }
 }

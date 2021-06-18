@@ -49,7 +49,7 @@ MonoBehaviour:
   f: 0
   previous: {fileID: 0}
   neighbors: []
-  radious: 1.5
+  radious: 3.5
   nodesLayer:
     serializedVersion: 2
     m_Bits: 512
