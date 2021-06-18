@@ -5,6 +5,7 @@ using UnityEngine;
 public class Node : MonoBehaviour
 {
     public bool gizmos;
+    public bool wireSphere;
     public float g;
     public float h;
     public float f;
@@ -60,8 +61,8 @@ public class Node : MonoBehaviour
                 foreach (var item in neighbors)
                     Gizmos.DrawLine(transform.position, item.transform.position);
             }
-
-            Gizmos.DrawWireSphere(transform.position, radious);
+            if(wireSphere)
+                Gizmos.DrawWireSphere(transform.position, radious);
         }
         Gizmos.DrawSphere(transform.position, 0.1f);        
     }

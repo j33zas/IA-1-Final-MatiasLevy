@@ -46,6 +46,7 @@ public class BaseUnit : MonoBehaviour
             return _COLL;
         }
     }
+    [SerializeField]
     GameObject _objective;
     public GameObject objective
     {
@@ -58,7 +59,6 @@ public class BaseUnit : MonoBehaviour
             _objective = value;
         }
     }
-    [SerializeField]
     protected int _currentHealth;
     public int currentHealth
     {
