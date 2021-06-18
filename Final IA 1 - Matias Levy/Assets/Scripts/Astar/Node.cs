@@ -44,6 +44,7 @@ public class Node : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        Gizmos.color = Color.blue;
         if(gizmos)
         {
             if (isBlocked)
@@ -56,7 +57,6 @@ public class Node : MonoBehaviour
             //}
             else
             {
-                Gizmos.color = Color.blue;
                 foreach (var item in neighbors)
                     Gizmos.DrawLine(transform.position, item.transform.position);
             }
