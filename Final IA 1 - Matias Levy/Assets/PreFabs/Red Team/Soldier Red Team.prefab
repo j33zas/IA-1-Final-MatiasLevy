@@ -53,7 +53,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gizmos: 0
-  _currentHealth: 0
+  _objective: {fileID: 0}
   nodesLayer:
     serializedVersion: 2
     m_Bits: 512
@@ -70,6 +70,8 @@ MonoBehaviour:
   AttackDistance: 1.2
   stunned: 0
   fleeing: 0
+  dead: 0
+  wander: 0
   stunTime: 0
   rotSpeed: 2.5
   walkSpeed: 1
@@ -105,7 +107,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 80
-  m_CollisionDetection: 2
+  m_CollisionDetection: 3
 --- !u!65 &231249629303523787
 BoxCollider:
   m_ObjectHideFlags: 0

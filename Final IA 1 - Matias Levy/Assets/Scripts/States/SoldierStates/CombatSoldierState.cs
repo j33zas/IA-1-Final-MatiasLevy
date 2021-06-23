@@ -24,35 +24,48 @@ public class CombatSoldierState : BaseUnitState
     {
         base.Execute();
 
-        obstacle = _me.GetObstacle(_me.transform, _me.obsAvoidanceRadious, _me.obstacleMask);
 
-        Vector3 dir = (target.transform.position - _me.transform.position).normalized;
-
-        if(Vector3.Distance(_me.transform.position, target.transform.position) >= _me.AttackDistance)
+        if (target)
         {
-            _me.AN.SetBool("Has destination", true);
-            _me.AN.SetBool("Walking", true);
+            obstacle = _me.GetObstacle(_me.transform, _me.obsAvoidanceRadious, _me.obstacleMask);
 
-            if (obstacle)
-                dir += (_me.transform.position - obstacle.transform.position).normalized * _me.obsAvoidanceWeight;
+            Vector3 dir = (target.transform.position - _me.transform.position).normalized;
+
+            if (Vector3.Distance(_me.transform.position, target.transform.position) >= _me.AttackDistance)
+            {
+                _me.AN.SetBool("Has destination", true);
+                _me.AN.SetBool("Walking", true);
+
+                if (obstacle)
+                    dir += (_me.transform.position - obstacle.transform.position).normalized * _me.obsAvoidanceWeight;
+                else
+                    dir = (target.transform.position - _me.transform.position);
+
+                dir = Vector3.Scale(dir, new Vector3(1, 0, 1));// para que no roten hacia arria y abajo, solo para los costados
+
+                _me.transform.forward = Vector3.Lerp(_me.transform.forward, dir.normalized, Time.deltaTime * _me.rotSpeed);
+
+                _me.transform.position += _me.transform.forward * _me.walkSpeed * Time.deltaTime;
+
+            }
             else
-                dir = (target.transform.position - _me.transform.position);
+            {
 
-            dir = Vector3.Scale(dir, new Vector3(1, 0, 1));// para que no roten hacia arria y abajo, solo para los costados
+                _me.AN.SetBool("Has destination", false);
+                _me.AN.SetBool("Walking", false);
 
-            _me.transform.forward = Vector3.Lerp(_me.transform.forward, dir.normalized, Time.deltaTime * _me.rotSpeed);
+                if (!_me.isattacking)
+                    _me.AttackRouletteWheel();
+            }
 
-            _me.transform.position += _me.transform.forward * _me.walkSpeed * Time.deltaTime;
+            if (target.dead)
+            {
+                _me.enemiesSeen.Remove(target);
+                target = null;
+            }
         }
         else
-        {
-
-            _me.AN.SetBool("Has destination", false);
-            _me.AN.SetBool("Walking", false);
-
-            if (!_me.isattacking)
-                _me.AttackRouletteWheel();
-        }
+            return;
     }
 
     public override void LateExecute()

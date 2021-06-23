@@ -54,8 +54,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ede46739294e1e44d85f02c38e9db85c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gizmos: 0
-  _currentHealth: 0
+  gizmos: 1
+  ShowNodes: 1
+  _objective: {fileID: 0}
   nodesLayer:
     serializedVersion: 2
     m_Bits: 512
@@ -73,11 +74,13 @@ MonoBehaviour:
   AttackDistance: 2
   stunned: 0
   fleeing: 0
+  dead: 0
+  wander: 0
   stunTime: 0
-  rotSpeed: 3
+  rotSpeed: 5
   walkSpeed: 1
   runSpeed: 2
-  obsAvoidanceRadious: 1
+  obsAvoidanceRadious: 1.2
   obsAvoidanceWeight: 1
   isattacking: 0
   enemiesSeen: []

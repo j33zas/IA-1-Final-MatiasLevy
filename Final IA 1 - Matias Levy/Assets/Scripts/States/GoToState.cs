@@ -10,8 +10,6 @@ public class GoToState : BaseUnitState
 
     Vector3 dir;
 
-    Node[] _path;
-
     int currentNode;
 
     float rotSpeedMultiplier = 1;
@@ -39,9 +37,9 @@ public class GoToState : BaseUnitState
         _me.AN.SetBool("Has destination", true);
         _me.AN.SetBool(animation, true);
 
-        _path = _me.GetAstarPath(_me.FindClosestNode(_me.eyeSightPosition, _me.eyeSightLength), _me.FindClosestNode(_me.objective.transform, _me.eyeSightLength)).ToArray();
+        _me.path = _me.GetAstarPath(_me.FindClosestNode(_me.eyeSightPosition, _me.eyeSightLength), _me.FindClosestNode(_me.objective.transform, _me.eyeSightLength)).ToArray();
 
-        foreach (var item in _path)// solo para debugear
+        foreach (var item in _me.path)// solo para debugear
             item.isPath = true;
     }
 
@@ -50,14 +48,14 @@ public class GoToState : BaseUnitState
         base.Execute();
         distToTarget = Vector3.Distance(_me.objective.transform.position, _me.transform.position);
 
-        if (currentNode < _path.Length)
+        if (currentNode < _me.path.Length)
         {
             obstacle = _me.GetObstacle(_me.transform, _me.obsAvoidanceRadious, _me.obstacleMask);
 
             if (obstacle)//Si hay un obstaculo lo esquivo
-                dir = Vector3.Lerp(_me.transform.forward, (_path[currentNode].transform.position - _me.transform.position), Time.deltaTime * _me.rotSpeed);
+                dir = Vector3.Lerp(_me.transform.forward, (_me.path[currentNode].transform.position - _me.transform.position), Time.deltaTime * _me.rotSpeed);
             else//sino camino hacia donde debo
-                dir = Vector3.Lerp(_me.transform.forward, _path[currentNode].transform.position - _me.transform.position, _me.rotSpeed * Time.deltaTime * rotSpeedMultiplier);
+                dir = Vector3.Lerp(_me.transform.forward, _me.path[currentNode].transform.position - _me.transform.position, _me.rotSpeed * Time.deltaTime * rotSpeedMultiplier);
 
             dir = Vector3.Scale(dir, new Vector3(1, 0, 1));// para que no roten hacia arria y abajo, solo para los costados
 
@@ -65,9 +63,9 @@ public class GoToState : BaseUnitState
 
             _me.transform.position += _me.transform.forward * _me.walkSpeed * Time.deltaTime;
 
-            if(Vector3.Distance(_me.transform.position, _path[currentNode].transform.position) <= 0.3f)
+            if(Vector3.Distance(_me.transform.position, _me.path[currentNode].transform.position) <= 0.3f)
             {
-                if (currentNode >= _path.Length)
+                if (currentNode >= _me.path.Length)
                     _me.objective = null;
                 else
                     currentNode++;

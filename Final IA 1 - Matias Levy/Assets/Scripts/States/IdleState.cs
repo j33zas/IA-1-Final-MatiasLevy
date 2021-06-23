@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class IdleState : BaseUnitState
 {
+    float timeIdle;
     public IdleState(StateMachine sm, BaseUnit unit):base(sm,unit)
     {
     }
@@ -18,7 +19,11 @@ public class IdleState : BaseUnitState
     public override void Execute()
     {
         base.Execute();
-
+        timeIdle += Time.deltaTime;
+        if(timeIdle >= 10)
+        {
+            _me.wander = true;
+        }
     }
 
     public override void LateExecute()

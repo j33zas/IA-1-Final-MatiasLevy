@@ -71,7 +71,7 @@ public class General : BaseUnit
 
         SM.Update();
 
-        if (stunned)
+        while (stunned)
         {
             if (SM.currentstate != hitState)
                 SM.SetState<HitState>();
@@ -85,7 +85,7 @@ public class General : BaseUnit
             return;
         }
 
-        if (healing)
+        while (healing)
         {
             if (SM.currentstate != healState)
                 SM.SetState<GeneralHealingState>();
@@ -98,6 +98,13 @@ public class General : BaseUnit
                     SM.SetState<IdleState>();
                 }
             return;
+        }
+
+        while (wander)
+        {
+            objective = FindFurthestNode(transform, eyeSightLength).gameObject;
+            SM.SetState<GoToState>();
+            wander = false;
         }
 
         var allyTemp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength);
@@ -138,7 +145,7 @@ public class General : BaseUnit
             {
                 objective = soldierTarget.gameObject;
                 if (SM.currentstate != runToState)
-                    SM.SetState<GoToRunState>();
+                    SM.SetState<GoToState>();
             }
 
 

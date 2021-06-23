@@ -120,7 +120,7 @@ public class Soldier : BaseUnit
             foreach (var item in temp)
             {
                 var soldier = item.GetComponent<Soldier>();
-                    if(soldier && !enemiesSeen.Contains(soldier))
+                    if(soldier && !enemiesSeen.Contains(soldier) && !soldier.dead)
                         enemiesSeen.Add(soldier);
             }
         }
@@ -158,11 +158,6 @@ public class Soldier : BaseUnit
     void FinishAttack()
     {
         isattacking = false;
-    }
-
-    void Die()
-    {
-        Destroy(gameObject);
     }
 
     public override void AttackRouletteWheel()

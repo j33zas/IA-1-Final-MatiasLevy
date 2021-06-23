@@ -50,12 +50,6 @@ public class Node : MonoBehaviour
         {
             if (isBlocked)
                 Gizmos.color = Color.red;
-            //else if (isPath)
-            //{
-            //    Gizmos.color = Color.green;
-            //    if(previous)
-            //        Gizmos.DrawLine(transform.position, previous.transform.position);
-            //}
             else
             {
                 foreach (var item in neighbors)

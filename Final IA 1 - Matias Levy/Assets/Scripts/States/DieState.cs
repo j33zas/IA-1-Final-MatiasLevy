@@ -11,6 +11,7 @@ public class DieState : BaseUnitState
         base.Awake();
         _me.COLL.isTrigger = true;
         _me.RB.isKinematic = true;
+        _me.dead = true;
         _me.AN.SetTrigger("Die");
     }
 

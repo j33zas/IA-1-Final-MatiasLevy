@@ -21,6 +21,9 @@ public class GeneralCombatState : BaseUnitState
     {
         base.Execute();
 
+        if (_me.objective.GetComponent<BaseUnit>().dead)
+            return;
+
         obstacle = _me.GetObstacle(_me.transform, _me.obsAvoidanceRadious, _me.obstacleMask);
 
         Vector3 dir = (_me.objective.transform.position - _me.transform.position).normalized;

@@ -5,6 +5,7 @@ using UnityEngine;
 public class BaseUnit : MonoBehaviour
 {
     public bool gizmos = false;
+    public bool ShowNodes = false;
 
     StateMachine _SM;
     public StateMachine SM
@@ -14,6 +15,7 @@ public class BaseUnit : MonoBehaviour
             return _SM;
         }
     }
+
     Animator _AN;
     public Animator AN
     {
@@ -22,6 +24,7 @@ public class BaseUnit : MonoBehaviour
             return _AN;
         }
     }
+
     AudioSource _AU;
     public AudioSource AU
     {
@@ -30,6 +33,7 @@ public class BaseUnit : MonoBehaviour
             return _AU;
         }
     }
+
     Rigidbody _RB;
     public Rigidbody RB
     {
@@ -38,6 +42,7 @@ public class BaseUnit : MonoBehaviour
             return _RB;
         }
     }
+
     Collider _COLL;
     public Collider COLL
     {
@@ -46,6 +51,7 @@ public class BaseUnit : MonoBehaviour
             return _COLL;
         }
     }
+
     [SerializeField]
     GameObject _objective;
     public GameObject objective
@@ -59,6 +65,20 @@ public class BaseUnit : MonoBehaviour
             _objective = value;
         }
     }
+
+    Node[] _path;
+    public Node[] path
+    {
+        get
+        {
+            return _path;
+        }
+        set
+        {
+            _path = value;
+        }
+    }
+
     protected int _currentHealth;
     public int currentHealth
     {
@@ -86,6 +106,8 @@ public class BaseUnit : MonoBehaviour
     public float AttackDistance;
     public bool stunned;
     public bool fleeing;
+    public bool dead = false;
+    public bool wander;
     public float stunTime = 0;
 
     public float rotSpeed;
@@ -150,14 +172,36 @@ public class BaseUnit : MonoBehaviour
             }
         }
         Node Closest = null;
-        foreach (var item in nodes)
+        foreach (var currrent in nodes)
         {
-            var itemNode = item.GetComponent<Node>();
-            if (Closest == null || Vector3.Distance(Closest.transform.position, target.position) > Vector3.Distance(item.transform.position, target.position))
+            var itemNode = currrent.GetComponent<Node>();
+            if (Closest == null || Vector3.Distance(Closest.transform.position, target.position) > Vector3.Distance(currrent.transform.position, target.position))
                 if (!itemNode.isBlocked)
-                    Closest = item.GetComponent<Node>();
+                    Closest = currrent.GetComponent<Node>();
         }
         return Closest;
+    }
+    public Node FindFurthestNode(Transform target, float viewRange)
+    {
+        var nodes = Physics.OverlapSphere(target.position, viewRange, nodesLayer);
+        if (nodes.Length <= 0)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                if (nodes.Length > 0)
+                    continue;
+                nodes = Physics.OverlapSphere(target.position, viewRange * i, nodesLayer);
+            }
+        }
+        Node Furthest = null;
+        foreach (var current in nodes)
+        {
+            var itemNode = current.GetComponent<Node>();
+            if (Furthest == null || Vector3.Distance(Furthest.transform.position, target.position) < Vector3.Distance(current.transform.position, target.position))
+                if (!itemNode.isBlocked)
+                    Furthest = current.GetComponent<Node>();
+        }
+        return Furthest;
     }
     public List<Node> GetAstarPath(Node startNode, Node EndNode)
     {
@@ -276,5 +320,16 @@ public class BaseUnit : MonoBehaviour
             foreach (var item in temp)
                 Gizmos.DrawRay(eyeSightPosition.position, (item.transform.position - eyeSightPosition.position));
         }
+        if(ShowNodes)
+        {
+            Gizmos.color = Color.green;
+            if(path != null)
+                for (int i = 0; i < path.Length; i++)
+                {
+                    if(path[i].previous)
+                        Gizmos.DrawLine(path[i].transform.position, path[i].previous.transform.position);
+
+                }
+    }
     }
 }
