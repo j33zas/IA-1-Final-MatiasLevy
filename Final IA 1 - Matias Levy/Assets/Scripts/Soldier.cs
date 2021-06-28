@@ -82,7 +82,7 @@ public class Soldier : BaseUnit
             return;
         }
 
-        if (_currentHealth <= 20)
+        if (_currentHealth <= 40)
         {
             BaseUnit closest = null;
             if(enemiesSeen.Count >= 1)
@@ -101,15 +101,17 @@ public class Soldier : BaseUnit
             {
                 if(Vector3.Distance(closest.transform.position,transform.position) <= 3)
                 {
-                    fleeState.attacker = closest;
                     if(!fleeing)
+                    {
+                        fleeState.attacker = closest;
                         SM.SetState<FleeState>();
+                    }
                 }
                 else
                 {
-                objective = commander.gameObject;
-                if(SM.currentstate != walkToState)
-                    SM.SetState<GoToRunState>();
+                    objective = commander.gameObject;
+                    if(SM.currentstate != walkToState)
+                        SM.SetState<GoToRunState>();
                 }
             }
         }
@@ -125,7 +127,7 @@ public class Soldier : BaseUnit
             }
         }
         #endregion
-        if(enemiesSeen.Count > 0)
+        while(enemiesSeen.Count > 0)
         {
             soldierTarget = enemiesSeen[0];
             if(soldierTarget)

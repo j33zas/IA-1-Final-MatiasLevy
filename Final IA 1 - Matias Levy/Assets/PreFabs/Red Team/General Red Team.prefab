@@ -66,12 +66,11 @@ MonoBehaviour:
   enemyTag: Blue
   debugText: {fileID: 6282359895213918185}
   attackString:
-  - Light
-  - Heavy
   - Ranged
-  attackValues: 020000000400000006000000
+  - Heavy
+  attackValues: 0200000004000000
   maxHealth: 150
-  AttackDistance: 2
+  AttackDistance: 6
   stunned: 0
   fleeing: 0
   dead: 0
@@ -86,7 +85,7 @@ MonoBehaviour:
   enemiesSeen: []
   eyeSightPosition: {fileID: 1768533409401511378}
   attackPosition: {fileID: 2756878903727802845}
-  eyeSightLength: 15
+  eyeSightLength: 8
   hitParticle: {fileID: 6207432705070699076}
   stunnedParticle: {fileID: 7851866479821111534}
   obstacleMask:
