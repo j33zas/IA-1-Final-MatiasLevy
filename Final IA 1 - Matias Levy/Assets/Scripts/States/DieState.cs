@@ -9,8 +9,8 @@ public class DieState : BaseUnitState
     public override void Awake()
     {
         base.Awake();
-        _me.COLL.isTrigger = true;
-        _me.RB.isKinematic = true;
+        _me.COLL.gameObject.SetActive(false);
+        _me.RB.gameObject.SetActive(false);
         _me.dead = true;
         _me.AN.SetTrigger("Die");
     }

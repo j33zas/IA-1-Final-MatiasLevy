@@ -43,9 +43,9 @@ public class GeneralCombatState : BaseUnitState
         }
         else
         {
-            _me.AN.SetBool("Has destination", false);
+            _me.AN.SetBool("Has Destination", false);
             _me.AN.SetBool("Walking", false);
-            if (!_me.isattacking)
+            if (!_me.canAttack)
                 _me.AttackRouletteWheel();
         }
     }

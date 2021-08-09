@@ -59,8 +59,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minDMG: 20
   maxDMG: 50
-  minStun: 3
-  maxStun: 5
+  minStun: 0.3
+  maxStun: 1
   lifeTime: 1.5
   owner: {fileID: 0}
   enemyTag: 

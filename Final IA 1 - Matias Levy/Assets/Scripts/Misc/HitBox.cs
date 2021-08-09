@@ -22,7 +22,7 @@ public class HitBox : MonoBehaviour
 
     private void OnTriggerEnter(Collider coll)
     {
-        if(coll.gameObject.tag == enemyTag)
+        if(coll.gameObject.layer == owner.enemyLayer)
         {
             var enemy = coll.GetComponent<BaseUnit>();
             enemy.TakeDMG(Random.Range(minDMG, maxDMG), Random.Range(minStun, maxStun));

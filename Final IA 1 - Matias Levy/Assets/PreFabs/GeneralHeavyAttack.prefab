@@ -48,7 +48,7 @@ MonoBehaviour:
   minDMG: 15
   maxDMG: 25
   minStun: 1
-  maxStun: 2
+  maxStun: 1.2
   lifeTime: 3
   owner: {fileID: 0}
   enemyTag: 

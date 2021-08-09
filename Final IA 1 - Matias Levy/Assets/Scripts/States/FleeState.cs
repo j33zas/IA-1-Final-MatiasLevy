@@ -20,8 +20,8 @@ public class FleeState : BaseUnitState
         base.Awake();
 
         _me.transform.forward = -(attacker.transform.position - _me.transform.position).normalized;
-        _me.fleeing = true;
-        _me.AN.SetBool("Has destination", true);
+        _me.lowHP = true;
+        _me.AN.SetBool("Has Destination", true);
         _me.AN.SetBool("Running", true);
     }
 
@@ -33,10 +33,8 @@ public class FleeState : BaseUnitState
 
         obstacle = _me.GetObstacle(_me.transform, _me.obsAvoidanceRadious, _me.obstacleMask);
 
-        if (obstacle)//Si hay un obstaculo lo esquivo
-            dir = Vector3.Lerp(_me.transform.forward, (obstacle.transform.position - _me.transform.position), Time.deltaTime * _me.rotSpeed);
-        else//sino camino hacia donde debo
-            dir = Vector3.Lerp(_me.transform.forward, -(attacker.transform.position - _me.transform.position), _me.rotSpeed * Time.deltaTime);
+        if (obstacle)
+            dir += (_me.transform.position - obstacle.transform.position).normalized * _me.obsAvoidanceWeight;
 
         dir = Vector3.Scale(dir, new Vector3(1, 0, 1));// para que no roten hacia arria y abajo, solo para los costados
 
@@ -50,7 +48,7 @@ public class FleeState : BaseUnitState
             if (CurrentTime >= timeTillScape)
             {
                 dir = Vector3.zero;
-                _me.fleeing = false;
+                _me.lowHP = false;
             }
         }
     }
@@ -63,7 +61,7 @@ public class FleeState : BaseUnitState
     public override void Sleep()
     {
         base.Sleep();
-        _me.AN.SetBool("Has destination", false);
+        _me.AN.SetBool("Has Destination", false);
         _me.AN.SetBool("Running", false);
 
     }

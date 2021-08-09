@@ -12,7 +12,7 @@ public class HitState : BaseUnitState
         _me.AN.SetTrigger("Hit");
         _me.AN.SetBool("Walking", false);
         _me.AN.SetBool("Running", false);
-        _me.AN.SetBool("Has destination", false);
+        _me.AN.SetBool("Has Destination", false);
         _me.stunnedParticle.Play();
     }
 

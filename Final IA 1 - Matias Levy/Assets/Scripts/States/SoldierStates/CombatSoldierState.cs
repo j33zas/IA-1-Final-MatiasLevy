@@ -15,7 +15,7 @@ public class CombatSoldierState : BaseUnitState
     public override void Awake()
     {
         base.Awake();
-        _me.AN.SetBool("Has destination", true);
+        _me.AN.SetBool("Has Destination", true);
         _me.AN.SetBool("Walking", true);
 
     }
@@ -31,11 +31,17 @@ public class CombatSoldierState : BaseUnitState
 
             Vector3 dir = (target.transform.position - _me.transform.position).normalized;
 
-            if (Vector3.Distance(_me.transform.position, target.transform.position) >= _me.AttackDistance)
+            if (Vector3.Distance(_me.transform.position, target.transform.position) <= _me.AttackDistance)
             {
-                _me.AN.SetBool("Has destination", true);
+                _me.AN.SetBool("Has Destination", false);
+                _me.AN.SetBool("Walking", false);
+                if (!_me.canAttack)
+                    _me.AttackRouletteWheel();
+            }
+            else
+            {
+                _me.AN.SetBool("Has Destination", true);
                 _me.AN.SetBool("Walking", true);
-
                 if (obstacle)
                     dir += (_me.transform.position - obstacle.transform.position).normalized * _me.obsAvoidanceWeight;
                 else
@@ -46,16 +52,6 @@ public class CombatSoldierState : BaseUnitState
                 _me.transform.forward = Vector3.Lerp(_me.transform.forward, dir.normalized, Time.deltaTime * _me.rotSpeed);
 
                 _me.transform.position += _me.transform.forward * _me.walkSpeed * Time.deltaTime;
-
-            }
-            else
-            {
-
-                _me.AN.SetBool("Has destination", false);
-                _me.AN.SetBool("Walking", false);
-
-                if (!_me.isattacking)
-                    _me.AttackRouletteWheel();
             }
 
             if (target.dead)
@@ -76,7 +72,7 @@ public class CombatSoldierState : BaseUnitState
     public override void Sleep()
     {
         base.Sleep();
-        _me.AN.SetBool("Has destination", false);
+        _me.AN.SetBool("Has Destination", false);
         _me.AN.SetBool("Walking", false);
     }
 }

@@ -52,7 +52,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da8b92d00b65d1047806fbaeabc82bab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gizmos: 0
+  gizmos: 1
+  ShowNodes: 0
   _objective: {fileID: 0}
   nodesLayer:
     serializedVersion: 2

@@ -94,9 +94,10 @@ public class BaseUnit : MonoBehaviour
 
     public LayerMask nodesLayer;
     public LayerMask enemyLayer;
+    public LayerMask allyLayer;
     public string enemyTag;
 
-    public StateText debugText;
+    public StateText stateDebug;
 
     public string[] attackString;
     public int[] attackValues;
@@ -105,10 +106,15 @@ public class BaseUnit : MonoBehaviour
 
     public float AttackDistance;
     public bool stunned;
-    public bool fleeing;
+    public bool lowHP;
+    public bool seesEnemy;
     public bool dead = false;
-    public bool wander;
+    public bool GoToTroop;
     public float stunTime = 0;
+    public float attackDelay;
+    protected float currentAttackDelay = 0;
+
+    public HitBox attack;
 
     public float rotSpeed;
     public float walkSpeed;
@@ -117,9 +123,20 @@ public class BaseUnit : MonoBehaviour
     public float obsAvoidanceRadious;
     public float obsAvoidanceWeight;
 
-    protected BaseUnit soldierTarget;
+    BaseUnit _soldierTarget;
+    public BaseUnit soldierTarget
+    {
+        get
+        {
+            return _soldierTarget;
+        }
+        set
+        {
+            _soldierTarget = value;
+        }
+    }
     
-    public bool isattacking = false;
+    public bool canAttack = true;
     protected Node destination;
     protected bool hasDestination;
     protected float distanceToDestination;
@@ -128,7 +145,7 @@ public class BaseUnit : MonoBehaviour
 
     public Transform eyeSightPosition;
     public Transform attackPosition;
-    public float eyeSightLength;
+    public float visionRange;
 
     public ParticleSystem hitParticle;
     public ParticleSystem stunnedParticle;
@@ -181,6 +198,7 @@ public class BaseUnit : MonoBehaviour
         }
         return Closest;
     }
+
     public Node FindFurthestNode(Transform target, float viewRange)
     {
         var nodes = Physics.OverlapSphere(target.position, viewRange, nodesLayer);
@@ -203,6 +221,7 @@ public class BaseUnit : MonoBehaviour
         }
         return Furthest;
     }
+
     public List<Node> GetAstarPath(Node startNode, Node EndNode)
     {
         foreach (var item in _openNodes)
@@ -299,10 +318,16 @@ public class BaseUnit : MonoBehaviour
 
     public virtual void TakeDMG(int DMG, float stun)
     {
+        Debug.Log("took DMG" + gameObject.name);
         _currentHealth -= DMG;
+        if(_currentHealth <= 0)
+        {
+            _currentHealth = 0;
+            dead = true;
+        }
     }
 
-    private void OnDrawGizmos()
+    public virtual void OnDrawGizmos()
     {
         if(gizmos)
         {
@@ -313,12 +338,23 @@ public class BaseUnit : MonoBehaviour
             Gizmos.DrawWireSphere(transform.position, AttackDistance);
 
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(eyeSightPosition.position, eyeSightLength);
+            Gizmos.DrawWireSphere(eyeSightPosition.position, visionRange);
 
-            Gizmos.DrawRay(eyeSightPosition.position, transform.forward * eyeSightLength);
-            var temp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength, enemyLayer);
+            Gizmos.DrawRay(eyeSightPosition.position, transform.forward * visionRange);
+            var temp = Physics.OverlapSphere(eyeSightPosition.position, visionRange, enemyLayer);
             foreach (var item in temp)
                 Gizmos.DrawRay(eyeSightPosition.position, (item.transform.position - eyeSightPosition.position));
+
+        }
+        if (objective)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, objective.transform.position);
+        }
+        if(soldierTarget)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, soldierTarget.transform.position);
         }
         if(ShowNodes)
         {
@@ -330,6 +366,6 @@ public class BaseUnit : MonoBehaviour
                         Gizmos.DrawLine(path[i].transform.position, path[i].previous.transform.position);
 
                 }
-    }
+        }
     }
 }

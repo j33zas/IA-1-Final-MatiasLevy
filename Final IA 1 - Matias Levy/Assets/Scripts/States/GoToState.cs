@@ -6,8 +6,6 @@ public class GoToState : BaseUnitState
 {
     GameObject obstacle;
 
-    float distToTarget;
-
     Vector3 dir;
 
     int currentNode;
@@ -22,40 +20,34 @@ public class GoToState : BaseUnitState
 
     string animation;
 
-    public GoToState(StateMachine sm, BaseUnit unit, float speed, string animationType) : base(sm, unit)
-    {
-        moveSpeed = speed;
-        animation = animationType;
-    }
+    public GoToState(StateMachine sm, BaseUnit unit) : base(sm, unit){}
 
     public override void Awake()
     {
         base.Awake();
-
         currentNode = 0;
 
-        _me.AN.SetBool("Has destination", true);
-        _me.AN.SetBool(animation, true);
-
-        _me.path = _me.GetAstarPath(_me.FindClosestNode(_me.eyeSightPosition, _me.eyeSightLength), _me.FindClosestNode(_me.objective.transform, _me.eyeSightLength)).ToArray();
+        _me.path = _me.GetAstarPath(_me.FindClosestNode(_me.eyeSightPosition, _me.visionRange), _me.FindClosestNode(_me.objective.transform, _me.visionRange)).ToArray();
+        
+        _me.transform.forward = Vector3.Scale(_me.path[0].transform.position - _me.transform.position, new Vector3(1, 0, 1));
 
         foreach (var item in _me.path)// solo para debugear
             item.isPath = true;
+
     }
 
     public override void Execute()
     {
         base.Execute();
-        distToTarget = Vector3.Distance(_me.objective.transform.position, _me.transform.position);
+
+        obstacle = _me.GetObstacle(_me.transform, _me.obsAvoidanceRadious, _me.obstacleMask);
 
         if (currentNode < _me.path.Length)
         {
-            obstacle = _me.GetObstacle(_me.transform, _me.obsAvoidanceRadious, _me.obstacleMask);
+            dir = (_me.path[currentNode].transform.position - _me.transform.position).normalized;
 
             if (obstacle)//Si hay un obstaculo lo esquivo
-                dir = Vector3.Lerp(_me.transform.forward, (_me.path[currentNode].transform.position - _me.transform.position), Time.deltaTime * _me.rotSpeed);
-            else//sino camino hacia donde debo
-                dir = Vector3.Lerp(_me.transform.forward, _me.path[currentNode].transform.position - _me.transform.position, _me.rotSpeed * Time.deltaTime * rotSpeedMultiplier);
+                dir += (_me.transform.position - obstacle.transform.position).normalized * _me.obsAvoidanceWeight;
 
             dir = Vector3.Scale(dir, new Vector3(1, 0, 1));// para que no roten hacia arria y abajo, solo para los costados
 
@@ -63,12 +55,11 @@ public class GoToState : BaseUnitState
 
             _me.transform.position += _me.transform.forward * _me.walkSpeed * Time.deltaTime;
 
-            if(Vector3.Distance(_me.transform.position, _me.path[currentNode].transform.position) <= 0.3f)
+            if(Vector3.Distance(_me.transform.position, _me.path[currentNode].transform.position) <= .6f)
             {
-                if (currentNode >= _me.path.Length)
+                currentNode++;
+                if (currentNode > _me.path.Length)
                     _me.objective = null;
-                else
-                    currentNode++;
 
                 currentTimeLost = 0;
                 rotSpeedMultiplier = 1;
@@ -78,6 +69,28 @@ public class GoToState : BaseUnitState
             
             if(currentTimeLost >= maxTimeLost)
                 rotSpeedMultiplier += Time.deltaTime;
+        }
+        else
+        {
+            if (Vector3.Distance(_me.transform.position, _me.objective.transform.position) <= .6f)
+            {
+                foreach (var Node in _me.path)
+                    Node.Reset();
+                _me.path = new Node [0];
+                return;
+            }
+
+            dir = (_me.objective.transform.position - _me.transform.position).normalized;
+
+            if (obstacle)//Si hay un obstaculo lo esquivo
+                dir += (_me.transform.position - obstacle.transform.position).normalized * _me.obsAvoidanceWeight;
+
+            dir = Vector3.Scale(dir, new Vector3(1, 0, 1));// para que no roten hacia arria y abajo, solo para los costados
+
+            _me.transform.forward = Vector3.Lerp(_me.transform.forward, dir.normalized, Time.deltaTime * _me.rotSpeed);
+
+            _me.transform.position += _me.transform.forward * _me.walkSpeed * Time.deltaTime;
+
         }
     }
 
@@ -89,7 +102,11 @@ public class GoToState : BaseUnitState
     public override void Sleep()
     {
         base.Sleep();
-        _me.AN.SetBool("Has destination", false);
-        _me.AN.SetBool(animation, false);
+        if(_me.path != null)
+            foreach (var node in _me.path)
+            {
+            node.Reset();
+            node.isPath = false;
+            }
     }
 }

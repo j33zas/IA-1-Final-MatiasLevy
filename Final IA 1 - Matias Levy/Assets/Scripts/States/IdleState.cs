@@ -11,8 +11,8 @@ public class IdleState : BaseUnitState
     public override void Awake()
     {
         base.Awake();
-        _me.AN.SetBool("Has destination", false);
-        _me.AN.SetBool("Enemy close", false);
+        //_me.AN.SetBool("Has Destination", false);
+        //_me.AN.SetBool("Enemy close", false);
         //Vector3.Distance(_me.eyeSightPosition.position, _me.objective.transform.position)
     }
 
@@ -22,7 +22,7 @@ public class IdleState : BaseUnitState
         timeIdle += Time.deltaTime;
         if(timeIdle >= 10)
         {
-            _me.wander = true;
+            _me.GoToTroop = true;
         }
     }
 

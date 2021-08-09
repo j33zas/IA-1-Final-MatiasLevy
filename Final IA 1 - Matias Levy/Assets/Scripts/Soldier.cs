@@ -6,7 +6,18 @@ public class Soldier : BaseUnit
 {
     Soldier[] Batallion;
 
-    General commander;
+    General _commander;
+    public General commander
+    {
+        get
+        {
+            return _commander;
+        }
+        set
+        {
+            _commander = value;
+        }
+    }
 
     public HitBox lightAttack;
     public HitBox heavyAttack;
@@ -25,7 +36,7 @@ public class Soldier : BaseUnit
     private void Start()
     {
         idleState = new IdleState(SM, this);
-        walkToState = new GoToState(SM, this, walkSpeed, "Running");
+        walkToState = new GoToState(SM, this);
         runToState = new GoToRunState(SM, this, runSpeed, "Walking");
         fleeState = new FleeState(SM, this);
         attackLightState = new LightAttackSoldierState(SM, this);
@@ -45,33 +56,25 @@ public class Soldier : BaseUnit
         SM.AddState(hitState);
         SM.SetState<IdleState>();
 
-        var temp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength);
-        foreach (var item in temp)
-        {
-            var G = item.gameObject.GetComponent<General>();
-            if(G!= null)
-                commander = G;
-        }
     }
 
     private void Update()
     {
-        debugText.text = SM.currentstate.ToString();
+        if (stateDebug != null)
+            stateDebug.text = SM.currentstate + " HP: " + _currentHealth + " Obj: " + soldierTarget;
+
         if (SM.currentstate == dieState)
             return;
         AN.SetBool("Stunned", stunned);
 
-        foreach (var item in enemiesSeen)
-            if (item == null)
-                enemiesSeen.Remove(item);
-
         SM.Update();
-        while (stunned)
+
+        if (stunned)
         {
             if (SM.currentstate != hitState)
                 SM.SetState<HitState>();
 
-            isattacking = false;
+            canAttack = false;
             stunTime -= Time.deltaTime;
             if (stunTime <= 0)
             {
@@ -81,6 +84,12 @@ public class Soldier : BaseUnit
             }
             return;
         }
+
+        if(GoToTroop)
+        {
+            //poner un objetivo al azar o hace un estado wander donde camina al azar
+        }
+
 
         if (_currentHealth <= 40)
         {
@@ -96,12 +105,11 @@ public class Soldier : BaseUnit
                         closest = item;
                 }
             }
-
             if(closest)
             {
                 if(Vector3.Distance(closest.transform.position,transform.position) <= 3)
                 {
-                    if(!fleeing)
+                    if(!lowHP)
                     {
                         fleeState.attacker = closest;
                         SM.SetState<FleeState>();
@@ -109,32 +117,44 @@ public class Soldier : BaseUnit
                 }
                 else
                 {
-                    objective = commander.gameObject;
+                    objective = _commander.gameObject;
                     if(SM.currentstate != walkToState)
                         SM.SetState<GoToRunState>();
                 }
             }
+            return;
         }
+
+        if(soldierTarget != null)
+        {
+            if (soldierTarget.dead)
+            {
+                enemiesSeen.Remove(soldierTarget);
+                soldierTarget = null;
+            }
+        }
+
         #region Busqueda de enemigos
-        var temp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength, enemyLayer);
+        var temp = Physics.OverlapSphere(eyeSightPosition.position, visionRange, enemyLayer);
         if(temp.Length > 0)
         {
             foreach (var item in temp)
             {
-                var soldier = item.GetComponent<Soldier>();
+                var soldier = item.GetComponent<BaseUnit>();
                     if(soldier && !enemiesSeen.Contains(soldier) && !soldier.dead)
                         enemiesSeen.Add(soldier);
             }
         }
         #endregion
-        while(enemiesSeen.Count > 0)
+
+        if (enemiesSeen.Count > 0 && SM.currentstate != combatState)
         {
             soldierTarget = enemiesSeen[0];
             if(soldierTarget)
-                foreach (Soldier enemy in enemiesSeen)
+                foreach (BaseUnit enemy in enemiesSeen)
                     if (Vector3.Distance(enemy.transform.position, transform.position) > Vector3.Distance(soldierTarget.transform.position, transform.position))
                         soldierTarget = enemy;
-            if(!isattacking)
+            if(!canAttack)
             {
                 combatState.target = soldierTarget;
                 if(SM.currentstate != combatState)
@@ -159,7 +179,7 @@ public class Soldier : BaseUnit
 
     void FinishAttack()
     {
-        isattacking = false;
+        canAttack = false;
     }
 
     public override void AttackRouletteWheel()
@@ -188,5 +208,10 @@ public class Soldier : BaseUnit
         AN.SetFloat("Health", _currentHealth);
         if (_currentHealth <= 0)
             SM.SetState<DieState>();
+    }
+
+    void Die()
+    {
+        AN.speed = 0;
     }
 }

@@ -20,26 +20,33 @@ public class Node : MonoBehaviour
     public void Awake()
     {
         var temp = Physics.OverlapSphere(transform.position, radious, nodesLayer);
-        if (temp.Length == 0)
-            isBlocked = true;
-
         foreach (var item in temp)
         {
             var node = item.GetComponent<Node>();
-
             if (!Physics.Raycast(transform.position, (node.transform.position - transform.position).normalized, radious, obstacleLayer))
             {
                 if (node && !node.isBlocked && node != this)
                     neighbors.Add(node);
             }
-            else if (node.neighbors.Contains(this))
-                node.neighbors.Remove(this);
         }
     }
+    private void Start()
+    {
+        List<Node> temp = new List<Node>();
+        foreach (var node in neighbors)
+            if (!node.neighbors.Contains(this))
+                temp.Add(node);
 
+        foreach (var item in temp)
+            neighbors.Remove(item);
+
+        if (neighbors.Count == 0)
+            isBlocked = true;
+    }
     public void Reset()
     {
         g = Mathf.Infinity;
+        isPath = false;
         previous = null;
     }
 
@@ -57,7 +64,9 @@ public class Node : MonoBehaviour
             }
             if(wireSphere)
                 Gizmos.DrawWireSphere(transform.position, radious);
+            if (isPath)
+                Gizmos.color = Color.green;
         }
-        Gizmos.DrawSphere(transform.position, 0.1f);        
+        Gizmos.DrawSphere(transform.position, 0.5f);      
     }
 }

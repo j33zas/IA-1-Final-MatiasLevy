@@ -54,7 +54,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ede46739294e1e44d85f02c38e9db85c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gizmos: 1
+  gizmos: 0
   ShowNodes: 1
   _objective: {fileID: 0}
   nodesLayer:
@@ -70,7 +70,7 @@ MonoBehaviour:
   - Heavy
   attackValues: 0200000004000000
   maxHealth: 150
-  AttackDistance: 6
+  AttackDistance: 3
   stunned: 0
   fleeing: 0
   dead: 0
@@ -79,8 +79,8 @@ MonoBehaviour:
   rotSpeed: 5
   walkSpeed: 1
   runSpeed: 2
-  obsAvoidanceRadious: 1.2
-  obsAvoidanceWeight: 1
+  obsAvoidanceRadious: 0.75
+  obsAvoidanceWeight: 3
   isattacking: 0
   enemiesSeen: []
   eyeSightPosition: {fileID: 1768533409401511378}
@@ -96,7 +96,7 @@ MonoBehaviour:
   heavyATK: {fileID: 8570393999566340587, guid: 9d878fe1770239a449722f184bcf0882,
     type: 3}
   rangedPos: {fileID: 608338264251185373}
-  healSpeed: 2
+  healSpeed: 1.05
   healing: 0
   HealParticles: {fileID: 1824369877436856576}
 --- !u!95 &6548935951785376458

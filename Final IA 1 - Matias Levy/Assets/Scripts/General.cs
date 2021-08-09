@@ -32,7 +32,7 @@ public class General : BaseUnit
     private void Start()
     {
         idleState = new IdleState(SM, this);
-        WalkToState = new GoToState(SM, this, walkSpeed, "Walking");
+        WalkToState = new GoToState(SM, this);
         runToState = new GoToRunState(SM, this, runSpeed, "Running");
         fleestate = new FleeState(SM, this);
         dieState = new DieState(SM, this);
@@ -61,17 +61,21 @@ public class General : BaseUnit
         var temp = FindObjectsOfType<Soldier>();
         foreach (var item in temp)
             if (item.gameObject.tag == gameObject.tag)
+            {
+                item.commander = this;
                 myTroops.Add(item);
+            }
 
     }
 
     private void Update()
     {
-        debugText.text = SM.currentstate.ToString();
+        if (stateDebug != null)
+            stateDebug.text = SM.currentstate + " HP: " + _currentHealth + " Obj: " + objective;
 
         SM.Update();
 
-        while (stunned)
+        if (stunned)
         {
             if (SM.currentstate != hitState)
                 SM.SetState<HitState>();
@@ -85,7 +89,7 @@ public class General : BaseUnit
             return;
         }
 
-        while (healing)
+        if (healing)
         {
             if (SM.currentstate != healState)
                 SM.SetState<GeneralHealingState>();
@@ -100,14 +104,14 @@ public class General : BaseUnit
             return;
         }
 
-        while (wander)
+        if (GoToTroop)
         {
-            objective = FindFurthestNode(transform, eyeSightLength).gameObject;
+            objective = myTroops[Random.Range(0, myTroops.Count)].gameObject;
             SM.SetState<GoToState>();
-            wander = false;
+            GoToTroop = false;
         }
 
-        var allyTemp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength);
+        var allyTemp = Physics.OverlapSphere(eyeSightPosition.position, visionRange);
         foreach (var item in allyTemp)
         {
             var soldier = item.GetComponent<Soldier>();
@@ -115,7 +119,7 @@ public class General : BaseUnit
                 if(!soldiersClose.Contains(soldier))
                     soldiersClose.Add(soldier);
         }
-        var enemyTemp = Physics.OverlapSphere(eyeSightPosition.position, eyeSightLength, enemyLayer);
+        var enemyTemp = Physics.OverlapSphere(eyeSightPosition.position, visionRange, enemyLayer);
         if(enemyTemp.Length>0)
         {
             foreach (var item in enemyTemp)
@@ -138,10 +142,10 @@ public class General : BaseUnit
         if(soldierTarget)
             if(Vector3.Distance(transform.position, soldierTarget.transform.position) <= AttackDistance)
             {
-                if (SM.currentstate != combatState && !isattacking)
+                if (SM.currentstate != combatState && !canAttack)
                     SM.SetState<GeneralCombatState>();
             }
-            else if(Vector3.Distance(transform.position, soldierTarget.transform.position) <= eyeSightLength)
+            else if(Vector3.Distance(transform.position, soldierTarget.transform.position) <= visionRange)
             {
                 objective = soldierTarget.gameObject;
                 if (SM.currentstate != runToState)

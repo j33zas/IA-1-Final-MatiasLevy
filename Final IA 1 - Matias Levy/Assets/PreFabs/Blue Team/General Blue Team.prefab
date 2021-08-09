@@ -190,7 +190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gizmos: 1
-  ShowNodes: 1
+  ShowNodes: 0
   _objective: {fileID: 0}
   nodesLayer:
     serializedVersion: 2
@@ -205,7 +205,7 @@ MonoBehaviour:
   - Heavy
   attackValues: 0200000004000000
   maxHealth: 150
-  AttackDistance: 6
+  AttackDistance: 3
   stunned: 0
   fleeing: 0
   dead: 0
@@ -214,8 +214,8 @@ MonoBehaviour:
   rotSpeed: 5
   walkSpeed: 1
   runSpeed: 2
-  obsAvoidanceRadious: 1.2
-  obsAvoidanceWeight: 1
+  obsAvoidanceRadious: 0.75
+  obsAvoidanceWeight: 3
   isattacking: 0
   enemiesSeen: []
   eyeSightPosition: {fileID: 1270486872315537793}
@@ -231,7 +231,7 @@ MonoBehaviour:
   heavyATK: {fileID: 8570393999566340587, guid: 9d878fe1770239a449722f184bcf0882,
     type: 3}
   rangedPos: {fileID: 5471512181076984376}
-  healSpeed: 2
+  healSpeed: 1.05
   healing: 0
   HealParticles: {fileID: 4100057616839723454}
 --- !u!95 &2069349824036322905
