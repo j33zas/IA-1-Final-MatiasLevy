@@ -71,7 +71,7 @@ public class General : BaseUnit
     private void Update()
     {
         if (stateDebug != null)
-            stateDebug.text = SM.currentstate + " HP: " + _currentHealth + " Obj: " + objective;
+            stateDebug.text = SM.currentstate + " HP: " + currentHealth + " Obj: " + objective;
 
         SM.Update();
 

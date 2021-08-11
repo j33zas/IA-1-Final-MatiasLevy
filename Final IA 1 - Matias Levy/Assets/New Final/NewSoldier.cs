@@ -8,6 +8,7 @@ public class NewSoldier : BaseUnit
     FleeState fleeState;
     NewSoldierFlockState flockState;
     HitState stunnedState;
+    DieState deadState;
 
     NewGeneral _G;
     public NewGeneral General
@@ -33,28 +34,24 @@ public class NewSoldier : BaseUnit
         fleeState = new FleeState(SM, this);
         flockState = new NewSoldierFlockState(SM, this);
         stunnedState = new HitState(SM, this);
+        deadState = new DieState(SM, this);
+
         SM.AddState(combatState);
         SM.AddState(fleeState);
         SM.AddState(flockState);
         SM.AddState(stunnedState);
+        SM.AddState(deadState);
         SM.SetState<NewSoldierFlockState>();
 
     }
 
     private void Update()
     {
+        SM.Update();
         if (stateDebug)
             stateDebug.text = SM.currentstate.ToString();
-        SM.Update();
-        if(enemiesSeen.Count > 0)
-        {
-            if (soldierTarget == null)
-                soldierTarget = enemiesSeen[0];
-
-            foreach (BaseUnit enemy in enemiesSeen)
-                if (Vector3.Distance(enemy.transform.position, transform.position) > Vector3.Distance(soldierTarget.transform.position, transform.position))
-                    soldierTarget = enemy;
-        }
+        if (dead)
+            return;
 
         if (seesEnemy && !lowHP)
         {
@@ -71,6 +68,7 @@ public class NewSoldier : BaseUnit
             if (SM.currentstate != fleeState)
                 SM.SetState<FleeState>();
         }
+
     }
     private void LateUpdate()
     {
@@ -84,7 +82,7 @@ public class NewSoldier : BaseUnit
             {
                 BaseUnit U = hit.collider.GetComponentInParent<BaseUnit>();
                 if (U)
-                    if (!U.dead && !enemiesSeen.Contains(U))
+                    if (!U.dead && !enemiesSeen.Contains(U) && U.gameObject.layer != gameObject.layer)
                         enemiesSeen.Add(U);
             }
         }
@@ -92,6 +90,15 @@ public class NewSoldier : BaseUnit
             seesEnemy = true;
         else
             seesEnemy = false;
+        BaseUnit def = null;
+        foreach (var enemy in enemiesSeen)
+        {
+            if (def == null)
+                def = enemy;
+            if (Vector3.Distance(transform.position, enemy.transform.position) < Vector3.Distance(transform.position, def.transform.position))
+                def = enemy;
+        }
+        soldierTarget = def;
         #endregion
 
         #region attack delay
@@ -100,6 +107,44 @@ public class NewSoldier : BaseUnit
             canAttack = true;
         else
             canAttack = false;
+        #endregion
+
+        #region Check HP
+        if (currentHealth < maxHealth / 4)
+        {
+            if (!lowHP)
+                lowHP = true;
+        }
+        else
+    if (lowHP)
+            lowHP = false;
+        #endregion
+
+        #region remuevo enemigos muertos de forma segura
+        List<BaseUnit> BUU = new List<BaseUnit>();
+        foreach (var enemy in enemiesSeen)
+            if (enemy.dead)
+                BUU.Add(enemy);
+        foreach (var enemy in BUU)
+            enemiesSeen.Remove(enemy);
+        #endregion
+
+        #region modificador de velocidad
+        var obs = GetObstacle(transform, obsAvoidanceRadious, obstacleMask);
+        if (obs)
+        {
+            var dis = Vector3.Distance(transform.position, obs.transform.position);
+            if (dis > 1)
+                dis = 1;
+
+            walkSpeed *= dis;
+            runSpeed *= dis;
+        }
+        else
+        {
+            walkSpeed = walkSpeedDefault;
+            runSpeed = runSpeedDefault;
+        }
         #endregion
     }
 
@@ -110,6 +155,15 @@ public class NewSoldier : BaseUnit
             var a = Instantiate(attack, attackPosition.transform.position, attackPosition.transform.rotation);
             a.owner = this;
             currentAttackDelay = 0;
+        }
+    }
+
+    public override void Die()
+    {
+        base.Die();
+        if(SM.currentstate != deadState)
+        {
+            SM.SetState<DieState>();
         }
     }
 }

@@ -61,7 +61,7 @@ public class Soldier : BaseUnit
     private void Update()
     {
         if (stateDebug != null)
-            stateDebug.text = SM.currentstate + " HP: " + _currentHealth + " Obj: " + soldierTarget;
+            stateDebug.text = SM.currentstate + " HP: " + currentHealth + " Obj: " + soldierTarget;
 
         if (SM.currentstate == dieState)
             return;
@@ -91,7 +91,7 @@ public class Soldier : BaseUnit
         }
 
 
-        if (_currentHealth <= 40)
+        if (currentHealth <= 40)
         {
             BaseUnit closest = null;
             if(enemiesSeen.Count >= 1)
@@ -205,13 +205,13 @@ public class Soldier : BaseUnit
         hitParticle.Play();
         stunTime += stun;
         stunned = true;
-        AN.SetFloat("Health", _currentHealth);
-        if (_currentHealth <= 0)
+        AN.SetFloat("Health", currentHealth);
+        if (currentHealth <= 0)
             SM.SetState<DieState>();
     }
 
-    void Die()
-    {
-        AN.speed = 0;
-    }
+    //void Die()
+    //{
+    //    AN.speed = 0;
+    //}
 }

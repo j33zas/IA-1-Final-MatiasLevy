@@ -36,7 +36,7 @@ public class NewSoldierFlockState : BaseUnitState
         }
 
         if(obstacle)
-            dir += (obstacle.transform.position - _me.transform.position).normalized * _me.obsAvoidanceWeight;
+            dir += (_me.transform.position - obstacle.transform.position).normalized * _me.obsAvoidanceWeight;
         else
             dir  =  (Cohesion() * _meS.cohesionWeight) + 
                     (Alineation() * _meS.alineationWeight) + 

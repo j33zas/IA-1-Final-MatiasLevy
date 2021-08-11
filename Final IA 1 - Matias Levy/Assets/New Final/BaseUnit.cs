@@ -52,7 +52,6 @@ public class BaseUnit : MonoBehaviour
         }
     }
 
-    [SerializeField]
     GameObject _objective;
     public GameObject objective
     {
@@ -79,7 +78,8 @@ public class BaseUnit : MonoBehaviour
         }
     }
 
-    protected int _currentHealth;
+    [SerializeField]
+    int _currentHealth;
     public int currentHealth
     {
         get
@@ -118,7 +118,9 @@ public class BaseUnit : MonoBehaviour
 
     public float rotSpeed;
     public float walkSpeed;
+    protected float walkSpeedDefault;
     public float runSpeed;
+    protected float runSpeedDefault;
 
     public float obsAvoidanceRadious;
     public float obsAvoidanceWeight;
@@ -174,6 +176,9 @@ public class BaseUnit : MonoBehaviour
 
         foreach (var item in _attacks)
             _totalAttackWeight += item.Value;//defino el peso total de los ataques
+
+        walkSpeedDefault = walkSpeed;
+        runSpeedDefault = runSpeed;
     }
 
     public Node FindClosestNode(Transform target, float viewRange)
@@ -318,13 +323,17 @@ public class BaseUnit : MonoBehaviour
 
     public virtual void TakeDMG(int DMG, float stun)
     {
-        Debug.Log("took DMG" + gameObject.name);
         _currentHealth -= DMG;
         if(_currentHealth <= 0)
         {
             _currentHealth = 0;
-            dead = true;
+            Die();
         }
+        hitParticle.Play();
+    }
+    public virtual void Die()
+    {
+        dead = true;
     }
 
     public virtual void OnDrawGizmos()

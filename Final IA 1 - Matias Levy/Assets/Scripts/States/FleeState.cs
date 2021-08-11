@@ -8,8 +8,9 @@ public class FleeState : BaseUnitState
 
     GameObject obstacle;
 
-    float timeTillScape = 2;
-    float CurrentTime = 0;
+    float _timeTillScape = 1;
+
+    float _currentTime = 0;
 
     Vector3 dir;
 
@@ -18,18 +19,35 @@ public class FleeState : BaseUnitState
     public override void Awake()
     {
         base.Awake();
-
-        _me.transform.forward = -(attacker.transform.position - _me.transform.position).normalized;
-        _me.lowHP = true;
-        _me.AN.SetBool("Has Destination", true);
-        _me.AN.SetBool("Running", true);
+        //_me.AN.SetBool("Has Destination", true);
+        //_me.AN.SetBool("Running", true);
     }
 
     public override void Execute()
     {
         base.Execute();
 
-        dir = -(attacker.transform.position - _me.transform.position).normalized;
+        var GO = _me.GetObstacle(_me.transform, _me.visionRange, _me.enemyLayer);
+
+        if(GO)
+            attacker = GO.GetComponent<BaseUnit>();
+
+        if(attacker)
+        {
+            dir += (_me.transform.position - attacker.transform.position).normalized;
+            if(Vector3.Distance(attacker.transform.position, _me.transform.position) > 2)
+            {
+                _currentTime += Time.deltaTime;
+                if (_currentTime >= _timeTillScape)
+                    dir = Vector3.zero;
+            }
+        }
+        else
+        {
+            _currentTime += Time.deltaTime;
+            if (_currentTime >= _timeTillScape)
+                dir = Vector3.zero;
+        }
 
         obstacle = _me.GetObstacle(_me.transform, _me.obsAvoidanceRadious, _me.obstacleMask);
 
@@ -41,16 +59,6 @@ public class FleeState : BaseUnitState
         _me.transform.forward = Vector3.Lerp(_me.transform.forward, dir, _me.rotSpeed * Time.deltaTime);
 
         _me.transform.position += _me.transform.forward * _me.runSpeed * Time.deltaTime;
-
-        if(Vector3.Distance(attacker.transform.position, _me.transform.position) > 2)
-        {
-            CurrentTime += Time.deltaTime;
-            if (CurrentTime >= timeTillScape)
-            {
-                dir = Vector3.zero;
-                _me.lowHP = false;
-            }
-        }
     }
 
     public override void LateExecute()
@@ -61,8 +69,7 @@ public class FleeState : BaseUnitState
     public override void Sleep()
     {
         base.Sleep();
-        _me.AN.SetBool("Has Destination", false);
-        _me.AN.SetBool("Running", false);
-
+        //_me.AN.SetBool("Has Destination", false);
+        //_me.AN.SetBool("Running", false);
     }
 }

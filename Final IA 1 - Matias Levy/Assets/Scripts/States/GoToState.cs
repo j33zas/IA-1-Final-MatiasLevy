@@ -29,11 +29,10 @@ public class GoToState : BaseUnitState
 
         _me.path = _me.GetAstarPath(_me.FindClosestNode(_me.eyeSightPosition, _me.visionRange), _me.FindClosestNode(_me.objective.transform, _me.visionRange)).ToArray();
         
-        _me.transform.forward = Vector3.Scale(_me.path[0].transform.position - _me.transform.position, new Vector3(1, 0, 1));
+        //_me.transform.forward = Vector3.Scale(_me.path[0].transform.position - _me.transform.position, new Vector3(1, 0, 1));
 
         foreach (var item in _me.path)// solo para debugear
             item.isPath = true;
-
     }
 
     public override void Execute()

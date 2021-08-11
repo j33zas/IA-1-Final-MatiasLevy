@@ -129,7 +129,7 @@ MonoBehaviour:
   maxDMG: 10
   minStun: 0
   maxStun: 0
-  lifeTime: 4
+  lifeTime: 2
   owner: {fileID: 0}
   enemyTag: 
 --- !u!114 &8788072312674165957
@@ -144,16 +144,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 778ef05f77654194ca03b9ab3691456c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  obstacles:
+  speed: 7
+  obstacle:
     serializedVersion: 2
-    m_Bits: 1024
-  redTeam:
-    serializedVersion: 2
-    m_Bits: 4096
-  blueTeam:
-    serializedVersion: 2
-    m_Bits: 2048
+    m_Bits: 7168
 --- !u!136 &1323169969098111795
 CapsuleCollider:
   m_ObjectHideFlags: 0

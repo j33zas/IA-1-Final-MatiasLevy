@@ -14,8 +14,6 @@ public class NewSoldierCombatState : BaseUnitState
 
     NewSoldier _meS;
 
-    bool newdir = false;
-
     public override void Awake()
     {
         base.Awake();
@@ -31,29 +29,23 @@ public class NewSoldierCombatState : BaseUnitState
 
         obstacle = _me.GetObstacle(_me.transform, _me.visionRange, _me.obstacleMask);
 
-        dir = _me.soldierTarget.transform.position - _me.transform.position;
-
-        if (obstacle)
-            dir += (_me.transform.position - obstacle.transform.position).normalized * _me.obsAvoidanceWeight;
-
-        if(_me.canAttack)
+        if (_me.soldierTarget != null)
         {
+            dir = _me.soldierTarget.transform.position - _me.transform.position;
             if (Vector3.Distance(_me.transform.position, _me.soldierTarget.transform.position) <= _me.AttackDistance)
             {
                 _meS.Strike();
-                speedMult = 0.3f;
-                newdir = true;
+                speedMult = 0;
             }
             else
             {
+                dir = _me.soldierTarget.transform.position - _me.transform.position;
                 speedMult = 1;
-                if(newdir)
-                {
-                    dir = Vector3.Scale(dir, new Vector3(Random.Range(-1, 1), 0, Random.Range(-1, 1)));
-                    newdir = false;
-                }
             }
         }
+
+        if (obstacle)
+            dir += (_me.transform.position - obstacle.transform.position).normalized * _me.obsAvoidanceWeight;
 
         dir = Vector3.Scale(dir, new Vector3(1, 0, 1));
 

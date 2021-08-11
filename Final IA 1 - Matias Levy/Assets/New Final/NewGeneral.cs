@@ -4,17 +4,21 @@ using UnityEngine;
 
 public class NewGeneral : BaseUnit
 {
-    [Range(0,1)]
-    public int mouseSelect;
-
     public GameObject gun;
+    public ParticleSystem healedPart;
+    public ParticleSystem healingPart;
+
     GoToState walkTo;
     IdleState idleing;
     NewGeneralCombatState combatState;
     NewGeneralHealState healState;
     NewGeneralFleeState fleeState;
+    DieState deadState;
 
-    List<BaseUnit> allEnemyUnits = new List<BaseUnit>();
+    public bool isSafe = false;
+    public float HealDelay;
+    bool canHeal;
+    float currentHealDelay;
 
     private void Start()
     {
@@ -23,11 +27,14 @@ public class NewGeneral : BaseUnit
         combatState = new NewGeneralCombatState(SM, this);
         healState = new NewGeneralHealState(SM, this);
         fleeState = new NewGeneralFleeState(SM, this);
+        deadState = new DieState(SM, this);
+
         SM.AddState(walkTo);
         SM.AddState(idleing);
         SM.AddState(combatState);
         SM.AddState(healState);
         SM.AddState(fleeState);
+        SM.AddState(deadState);
         SM.SetState<IdleState>();
         objective = new GameObject();
 
@@ -47,7 +54,7 @@ public class NewGeneral : BaseUnit
         SM.Update();
 
         #region soleccion de objetivo (RTS movement)
-        if (Input.GetMouseButtonDown(mouseSelect))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             if(path != null)
             {
@@ -58,20 +65,47 @@ public class NewGeneral : BaseUnit
                 }
                 path = null;
             }
-            RaycastHit hit;
-            Ray raymond = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Collider[] colliders = new Collider[1];
-
-            if(Physics.Raycast(raymond, out hit))
-                colliders = Physics.OverlapSphere(hit.point, 3);
-
-            objective.transform.position = hit.point;
             SM.SetState<GoToState>();
         }
         #endregion
 
         #region centre point calculation
 
+        float posX = 0;
+        float posY = 0;
+        float posZ = 0;
+        float centreX = 0;
+        float centreY = 0;
+        float centreZ = 0;
+
+        if(gameObject.layer == LayerMask.NameToLayer("BlueTeam"))
+        {
+            foreach (var item in GameManager.gameManager.redTeam)
+            {
+                posX += item.transform.position.x;
+                posY += item.transform.position.y;
+                posZ += item.transform.position.z;
+            }
+            centreX = posX / GameManager.gameManager.redTeam.Count;
+            centreY = posY / GameManager.gameManager.redTeam.Count;
+            centreZ = posZ / GameManager.gameManager.redTeam.Count;
+        }
+        if(gameObject.layer == LayerMask.NameToLayer("RedTeam"))
+        {
+            foreach (var item in GameManager.gameManager.blueTeam)
+            {
+                posX += item.transform.position.x;
+                posY += item.transform.position.y;
+                posZ += item.transform.position.z;
+            }
+            centreX = posX / GameManager.gameManager.blueTeam.Count;
+            centreY = posY / GameManager.gameManager.blueTeam.Count;
+            centreZ = posZ / GameManager.gameManager.blueTeam.Count;
+        }
+        if (GameManager.gameManager.blueTeam.Count < 1 || GameManager.gameManager.redTeam.Count < 1)
+            objective.transform.position = new Vector3(centreX, centreY, centreZ);
+        else
+            objective.transform.position = Vector3.zero;
         #endregion
 
         #region Enter Combat
@@ -93,22 +127,15 @@ public class NewGeneral : BaseUnit
         #region fleeing
         if(lowHP)
         {
-            if(seesEnemy)
+            if(isSafe)
             {
-                if (soldierTarget)
-                    fleeState.enemy = soldierTarget.gameObject;
-
-                if(SM.currentstate != fleeState)
-                {
-                    SM.SetState<NewGeneralFleeState>();
-                }
+                if (SM.currentstate != healState)
+                    SM.SetState<NewGeneralHealState>();
             }
             else
             {
-                if (SM.currentstate != healState)
-                {
-                    SM.SetState<NewGeneralHealState>();
-                }
+                if(SM.currentstate != fleeState)
+                    SM.SetState<NewGeneralFleeState>();
             }
         }
         #endregion
@@ -125,28 +152,27 @@ public class NewGeneral : BaseUnit
             {
                 BaseUnit U = hit.collider.GetComponentInParent<BaseUnit>();
                 if (U)
-                    if (!U.dead && !enemiesSeen.Contains(U))
+                    if (!U.dead && !enemiesSeen.Contains(U) && U.gameObject.layer != gameObject.layer)
                         enemiesSeen.Add(U);
             }
         }
         if (enemiesSeen.Count > 0)
+        {
             seesEnemy = true;
+            isSafe = false;
+        }
         else
             seesEnemy = false;
         #endregion
 
         #region Check HP
-        if (currentHealth < currentHealth / 4)
-        {
-            if(!lowHP)
-                lowHP = true;
-        }
+        if (currentHealth < maxHealth / 2)
+            lowHP = true;
         else
-            if (lowHP)
-                lowHP = false;
+            lowHP = false;
         #endregion
 
-        #region shooting delay
+        #region cooldowns
         currentAttackDelay += Time.deltaTime;
         if (currentAttackDelay >= attackDelay)
         {
@@ -155,6 +181,41 @@ public class NewGeneral : BaseUnit
         }
         else
             canAttack = false;
+        currentHealDelay += Time.deltaTime;
+        if (currentHealDelay >= HealDelay)
+        {
+            currentHealDelay = HealDelay;
+            canHeal = true;
+        }
+        else
+            canAttack = false;
+        #endregion
+
+        #region remuevo enemigos muertos de forma segura
+        List<BaseUnit> BUU = new List<BaseUnit>();
+        foreach (var enemy in enemiesSeen)
+            if (enemy.dead)
+                BUU.Add(enemy);
+        foreach (var enemy in BUU)
+            enemiesSeen.Remove(enemy);
+        #endregion
+
+        #region modificador de velocidad
+        var obs = GetObstacle(transform, obsAvoidanceRadious, obstacleMask);
+        if(obs)
+        {
+            var dis = Vector3.Distance(transform.position, obs.transform.position);
+            if(dis>1)
+                dis = 1;
+
+            walkSpeed *= dis;
+            runSpeed *= dis;
+        }
+        else
+        {
+            walkSpeed = walkSpeedDefault;
+            runSpeed = runSpeedDefault;
+        }
         #endregion
     }
 
@@ -162,15 +223,32 @@ public class NewGeneral : BaseUnit
     {
         if (canAttack)
         {
-            var b = Instantiate(attack, attackPosition.transform.position, attackPosition.transform.rotation);
+            var b = attack;
             b.owner = this;
+            Instantiate(b, attackPosition.transform.position, attackPosition.transform.rotation);
             currentAttackDelay = 0;
         }
     }
 
-    public override void TakeDMG(int DMG, float stun)
+    public void Heal(int value)
     {
-        base.TakeDMG(DMG, stun);
+        if(canHeal)
+        {
+            healedPart.Play();
+            currentHealth += value;
+            if (currentHealth > maxHealth)
+                currentHealth = maxHealth;
+            currentHealDelay = 0;
+        }
+    }
+
+    public override void Die()
+    {
+        base.Die();
+        if (SM.currentstate != deadState)
+        {
+            SM.SetState<DieState>();
+        }
     }
 
     public override void OnDrawGizmos()

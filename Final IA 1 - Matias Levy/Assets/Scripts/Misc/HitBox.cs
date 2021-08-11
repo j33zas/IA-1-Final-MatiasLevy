@@ -14,18 +14,17 @@ public class HitBox : MonoBehaviour
 
     public BaseUnit owner;
     public string enemyTag;
-    
-    private void Update()
+
+
+    private void Awake()
     {
         Destroy(gameObject, lifeTime);
     }
 
     private void OnTriggerEnter(Collider coll)
     {
-        if(coll.gameObject.layer == owner.enemyLayer)
-        {
-            var enemy = coll.GetComponent<BaseUnit>();
+        var enemy = coll.GetComponentInParent<BaseUnit>();
+        if(enemy && enemy.gameObject != owner.gameObject)
             enemy.TakeDMG(Random.Range(minDMG, maxDMG), Random.Range(minStun, maxStun));
-        }
     }
 }

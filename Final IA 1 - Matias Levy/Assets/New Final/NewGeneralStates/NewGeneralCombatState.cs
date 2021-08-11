@@ -22,18 +22,26 @@ public class NewGeneralCombatState : BaseUnitState
     public override void Execute()
     {
         base.Execute();
-        _meG.gun.transform.LookAt(_me.soldierTarget.transform);
-        _meG.gun.transform.Rotate(new Vector3(-15, 0, 0));
-
-        if(Vector3.Distance(_me.transform.position, _me.soldierTarget.transform.position) <= _me.AttackDistance)
+        if (_me.soldierTarget != null)
         {
-            speedMult = 0;
-            _meG.Shoot();
-        }
-        else
-        {
-            dir = _me.soldierTarget.transform.position - _me.transform.position;
-            speedMult = 1;
+            _meG.gun.transform.LookAt(_me.soldierTarget.transform);
+            _meG.gun.transform.Rotate(new Vector3(-10, 0, 0));
+            if(Vector3.Distance(_me.transform.position, _me.soldierTarget.transform.position) <= _me.AttackDistance)
+            {
+                speedMult = 0.1f;
+                _meG.Shoot();
+            }
+            else
+            {
+                dir = _me.soldierTarget.transform.position - _me.transform.position;
+                speedMult = 1;
+            }
+            if (_me.soldierTarget.dead)
+            {
+                var GO = _me.GetObstacle(_me.transform, _me.visionRange, _me.enemyLayer);
+                if(GO != null)
+                    _me.soldierTarget = GO.GetComponentInParent<BaseUnit>();
+            }
         }
 
         dir = Vector3.Scale(dir, new Vector3(1, 0, 1));

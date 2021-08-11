@@ -5,10 +5,7 @@ using UnityEngine;
 public class GeneralFireBall : MonoBehaviour
 {
     public float speed;
-    public LayerMask obstacles;
-    public LayerMask redTeam;
-    public LayerMask blueTeam;
-
+    public LayerMask obstacle;
     void Start()
     {
         
@@ -17,10 +14,9 @@ public class GeneralFireBall : MonoBehaviour
     {
         transform.position += transform.forward * speed * Time.deltaTime;
     }
-
     private void OnTriggerEnter(Collider coll)
     {
-        Debug.Log(coll.gameObject.name);
-        Destroy(gameObject, .01f);
+        if (coll.gameObject.layer == obstacle)
+            Destroy(gameObject, 0.2f);
     }
 }
