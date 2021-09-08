@@ -48,7 +48,6 @@ public class NewSoldierFlockState : BaseUnitState
 
         _me.transform.forward = Vector3.Slerp(_me.transform.forward, dir, Time.deltaTime * _me.rotSpeed);
 
-
         _me.transform.position += _me.transform.forward * _me.walkSpeed * Time.deltaTime;
     }
 

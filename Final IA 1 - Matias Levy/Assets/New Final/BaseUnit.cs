@@ -316,10 +316,7 @@ public class BaseUnit : MonoBehaviour
         return _obs;
     }
 
-    public virtual void AttackRouletteWheel()
-    {
-
-    }
+    public virtual void AttackRouletteWheel(){}
 
     public virtual void TakeDMG(int DMG, float stun)
     {

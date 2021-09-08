@@ -130,7 +130,7 @@ public class NewSoldier : BaseUnit
         #endregion
 
         #region modificador de velocidad
-        var obs = GetObstacle(transform, obsAvoidanceRadious, obstacleMask);
+        var obs = GetObstacle(transform, obsAvoidanceRadious, obstacleMask);//cambiarlo por un raycast que sale hacia adelante y usar hit.point para calcular la distance
         if (obs)
         {
             var dis = Vector3.Distance(transform.position, obs.transform.position);
